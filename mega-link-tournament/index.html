@@ -193,14 +193,22 @@
       background: var(--primary);
       box-shadow: 0 0 0 5px #71978315;
     }
-    .quick-nav a:nth-child(2)::before { background: #c68b54; box-shadow: 0 0 0 5px #c68b5415; }
-    .quick-nav a:nth-child(3)::before { background: #7392a0; box-shadow: 0 0 0 5px #7392a015; }
+    .quick-nav a:nth-child(1) { color: #356b53; border-color: #b9d2c4; background: linear-gradient(180deg, #f8fcf9, #eaf5ee); }
+    .quick-nav a:nth-child(2) { color: #71568f; border-color: #d2c3e4; background: linear-gradient(180deg, #fdfbff, #f1ebf8); }
+    .quick-nav a:nth-child(3) { color: #976126; border-color: #e2c399; background: linear-gradient(180deg, #fffdf8, #fff2df); }
+    .quick-nav a:nth-child(4) { color: #416f82; border-color: #bdd5dc; background: linear-gradient(180deg, #fbfeff, #e9f4f7); }
+    .quick-nav a:nth-child(1)::before { background: #5f9276; box-shadow: 0 0 0 5px #5f927618; }
+    .quick-nav a:nth-child(2)::before { background: #8b6daf; box-shadow: 0 0 0 5px #8b6daf18; }
+    .quick-nav a:nth-child(3)::before { background: #ca8b43; box-shadow: 0 0 0 5px #ca8b4318; }
+    .quick-nav a:nth-child(4)::before { background: #5e8fa3; box-shadow: 0 0 0 5px #5e8fa318; }
     .quick-nav a:hover {
       transform: translateY(-2px);
-      border-color: #759987;
-      background: #eef5f0;
       box-shadow: 0 9px 20px #5b695f20;
     }
+    .quick-nav a:nth-child(1):hover { border-color: #78a18a; background: #e4f2e9; }
+    .quick-nav a:nth-child(2):hover { border-color: #a98dc5; background: #ece3f6; }
+    .quick-nav a:nth-child(3):hover { border-color: #d2a25f; background: #ffedd2; }
+    .quick-nav a:nth-child(4):hover { border-color: #77a7b7; background: #e2f1f5; }
 
     main {
       max-width: 1260px;
@@ -432,9 +440,87 @@
       height: auto;
       border-radius: 11px;
     }
+    .winners-grid {
+      display: grid;
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+      gap: 16px;
+    }
+    .winner-card {
+      --rank: #5f9276;
+      --rank-soft: #edf6f0;
+      position: relative;
+      overflow: hidden;
+      padding: 17px;
+      border: 1px solid color-mix(in srgb, var(--rank) 38%, #d7dfd8);
+      border-radius: 20px;
+      background: linear-gradient(160deg, #fffefa, var(--rank-soft));
+      box-shadow: 0 14px 32px #59675d1d;
+    }
+    .winner-card::before {
+      content: "";
+      position: absolute;
+      inset: 0 0 auto;
+      height: 5px;
+      background: var(--rank);
+    }
+    .winner-card.champion { --rank: #c28a2e; --rank-soft: #fff6df; }
+    .winner-card.runner-up { --rank: #8468aa; --rank-soft: #f4effb; }
+    .winner-card.top-four-a { --rank: #398c8c; --rank-soft: #e9f7f5; }
+    .winner-card.top-four-b { --rank: #ba6d70; --rank-soft: #fbefef; }
+    .winner-rank {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+      margin: 3px 0 14px;
+      color: var(--rank);
+      font-weight: 850;
+    }
+    .winner-rank strong { font-size: 20px; }
+    .winner-rank small { letter-spacing: .11em; }
+    .winner-id-label { margin-bottom: 3px; color: var(--muted); font-size: 12px; }
+    .winner-id {
+      min-height: 2.7em;
+      margin: 0 0 13px;
+      color: var(--text);
+      font-size: clamp(20px, 2.1vw, 28px);
+      line-height: 1.25;
+      word-break: break-all;
+    }
+    .winner-team-slot {
+      display: grid;
+      place-content: center;
+      width: 100%;
+      aspect-ratio: 359 / 458;
+      min-height: 320px;
+      padding: 20px;
+      border: 2px dashed color-mix(in srgb, var(--rank) 42%, #d7dfd8);
+      border-radius: 15px;
+      color: color-mix(in srgb, var(--rank) 78%, #25322d);
+      background:
+        radial-gradient(circle at 50% 44%, color-mix(in srgb, var(--rank) 10%, transparent), transparent 42%),
+        #fffefa9c;
+      text-align: center;
+    }
+    .winner-team-slot b { margin-bottom: 5px; font-size: 16px; }
+    .winner-team-slot small { color: var(--muted); }
+    .placeholder-ball {
+      display: grid;
+      place-items: center;
+      width: 54px;
+      height: 54px;
+      margin: 0 auto 13px;
+      border: 2px solid currentColor;
+      border-radius: 50%;
+      font-size: 21px;
+      opacity: .72;
+    }
 
     [hidden] { display: none !important; }
 
+    @media (max-width: 1100px) {
+      .winners-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+    }
     @media (max-width: 850px) {
       header { padding-top: 40px; padding-bottom: 40px; }
       h1 { font-size: clamp(27px, 5.4vw, 43px); }
@@ -457,6 +543,8 @@
       .poster-card { padding: 4px; border-radius: 13px; }
       .poster-card img { border-radius: 9px; }
       .section-title { align-items: start; flex-direction: column; gap: 2px; }
+      .winners-grid { grid-template-columns: 1fr; }
+      .winner-team-slot { min-height: 360px; }
     }
   </style>
 </head>
@@ -469,6 +557,7 @@
       <span class="badge" id="playerBadge">已收录 1 位选手</span>
       <span class="badge">大赛奖励一览</span>
       <span class="badge">完整赛事规则</span>
+      <span class="badge">胜出选手资料</span>
     </div>
   </header>
 
@@ -484,6 +573,7 @@
         <a href="#players-section">选手阵容</a>
         <a href="#rules">赛事规则</a>
         <a href="#rewards">大赛奖励</a>
+        <a href="#winners">胜出选手</a>
       </nav>
     </div>
   </div>
@@ -522,6 +612,39 @@
       <figure class="poster-card">
         <img src="tournament-rewards.png" alt="辉可梦x更多Mega联动赛大赛奖励一览" loading="lazy" decoding="async">
       </figure>
+    </section>
+
+    <section class="event-section" id="winners">
+      <div class="section-title">
+        <h2>胜出选手</h2>
+        <span>比赛结束后更新选手 ID 与完整参赛阵容</span>
+      </div>
+      <div class="winners-grid">
+        <article class="winner-card champion">
+          <div class="winner-rank"><strong>冠军</strong><small>CHAMPION</small></div>
+          <div class="winner-id-label">选手 ID</div>
+          <h3 class="winner-id">未知</h3>
+          <div class="winner-team-slot"><span class="placeholder-ball">◉</span><b>阵容图片待更新</b><small>公布结果后放入</small></div>
+        </article>
+        <article class="winner-card runner-up">
+          <div class="winner-rank"><strong>亚军</strong><small>RUNNER-UP</small></div>
+          <div class="winner-id-label">选手 ID</div>
+          <h3 class="winner-id">未知</h3>
+          <div class="winner-team-slot"><span class="placeholder-ball">◉</span><b>阵容图片待更新</b><small>公布结果后放入</small></div>
+        </article>
+        <article class="winner-card top-four-a">
+          <div class="winner-rank"><strong>四强</strong><small>TOP FOUR</small></div>
+          <div class="winner-id-label">选手 ID</div>
+          <h3 class="winner-id">未知</h3>
+          <div class="winner-team-slot"><span class="placeholder-ball">◉</span><b>阵容图片待更新</b><small>公布结果后放入</small></div>
+        </article>
+        <article class="winner-card top-four-b">
+          <div class="winner-rank"><strong>四强</strong><small>TOP FOUR</small></div>
+          <div class="winner-id-label">选手 ID</div>
+          <h3 class="winner-id">未知</h3>
+          <div class="winner-team-slot"><span class="placeholder-ball">◉</span><b>阵容图片待更新</b><small>公布结果后放入</small></div>
+        </article>
+      </div>
     </section>
 
     <footer>辉可梦x更多Mega MegaLink联动赛 · 在线专题页</footer>
