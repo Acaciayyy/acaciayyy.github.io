@@ -1,0 +1,637 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="辉可梦x更多Mega MegaLink联动赛选手阵容、赛事奖励与比赛规则在线查询。">
+  <meta name="theme-color" content="#f6f3eb">
+  <title>辉可梦x更多Mega MegaLink联动赛</title>
+  <style>
+    :root {
+      --bg: #f6f3eb;
+      --panel: #fffefa;
+      --panel-2: #f0f6f1;
+      --line: #d7dfd8;
+      --text: #25322d;
+      --muted: #6e7a74;
+      --primary: #567c6b;
+      --primary-soft: #e8f1ec;
+      --accent: #c7814e;
+      --gold: #ad7043;
+    }
+
+    * { box-sizing: border-box; }
+    html { scroll-behavior: smooth; }
+    body {
+      margin: 0;
+      min-height: 100vh;
+      color: var(--text);
+      background:
+        radial-gradient(circle at 10% 0, #dcebe1 0, transparent 35rem),
+        radial-gradient(circle at 90% 18%, #f1dfce 0, transparent 31rem),
+        var(--bg);
+      font: 15px/1.65 system-ui, -apple-system, "Segoe UI", "Microsoft YaHei", sans-serif;
+    }
+
+    button, input { font: inherit; }
+    button { color: inherit; }
+
+    header {
+      position: relative;
+      overflow: hidden;
+      padding: 56px max(20px, calc((100% - 1260px) / 2)) 50px;
+      border-bottom: 1px solid var(--line);
+      background: linear-gradient(140deg, #e7f1ebee, #faf6eeee);
+    }
+    header::after {
+      content: "";
+      position: absolute;
+      width: 330px;
+      height: 330px;
+      right: max(8%, 28px);
+      top: -190px;
+      border-radius: 50%;
+      border: 48px solid #7da18f18;
+      box-shadow: 0 0 0 38px #d8a47712;
+      pointer-events: none;
+    }
+    h1 {
+      position: relative;
+      z-index: 1;
+      max-width: none;
+      margin: 0 0 12px;
+      font-size: clamp(32px, 4.4vw, 54px);
+      line-height: 1.12;
+      letter-spacing: -.025em;
+      white-space: nowrap;
+    }
+    .event-kicker {
+      position: relative;
+      z-index: 1;
+      display: flex;
+      align-items: center;
+      gap: 9px;
+      margin-bottom: 10px;
+      color: var(--primary);
+      font-size: 12px;
+      font-weight: 800;
+      letter-spacing: .16em;
+    }
+    .event-kicker::before {
+      content: "";
+      width: 28px;
+      height: 3px;
+      border-radius: 99px;
+      background: linear-gradient(90deg, var(--primary), var(--accent));
+    }
+    .subtitle {
+      position: relative;
+      z-index: 1;
+      max-width: 760px;
+      margin: 0;
+      color: #5e6d66;
+      font-size: 16px;
+    }
+    .accent { color: var(--primary); }
+    .badges {
+      position: relative;
+      z-index: 1;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin-top: 20px;
+    }
+    .badge {
+      padding: 5px 12px;
+      border: 1px solid #cbd8d0;
+      border-radius: 999px;
+      color: #466054;
+      background: #fffefa;
+      font-size: 12px;
+    }
+
+    .topbar {
+      position: sticky;
+      z-index: 10;
+      top: 0;
+      border-bottom: 1px solid #d4ddd6;
+      background: #f7f4eceb;
+      backdrop-filter: blur(16px);
+      box-shadow: 0 9px 24px #5d6b6114;
+    }
+    .toolbar {
+      display: grid;
+      grid-template-columns: minmax(240px, 1fr) auto;
+      gap: 10px;
+      align-items: center;
+      max-width: 1260px;
+      margin: auto;
+      padding: 13px 20px;
+    }
+    .search-wrap { position: relative; }
+    .search-icon {
+      position: absolute;
+      left: 14px;
+      top: 50%;
+      transform: translateY(-50%);
+      color: var(--primary);
+      pointer-events: none;
+    }
+    input {
+      width: 100%;
+      padding: 12px 43px;
+      border: 1px solid var(--line);
+      border-radius: 12px;
+      outline: none;
+      color: var(--text);
+      background: #fffefa;
+    }
+    input:focus {
+      border-color: var(--primary);
+      box-shadow: 0 0 0 3px #71978324;
+    }
+    #clear {
+      position: absolute;
+      right: 7px;
+      top: 50%;
+      transform: translateY(-50%);
+      display: none;
+      padding: 5px 9px;
+      border: 0;
+      border-radius: 8px;
+      color: var(--muted);
+      background: transparent;
+      cursor: pointer;
+    }
+    #clear:hover { color: var(--text); background: #e9f0eb; }
+    .status { color: var(--muted); white-space: nowrap; }
+    .quick-nav { display: flex; grid-column: 1 / -1; gap: 12px; padding-top: 2px; }
+    .quick-nav a {
+      display: inline-flex;
+      align-items: center;
+      gap: 9px;
+      min-height: 48px;
+      padding: 10px 20px;
+      border: 1px solid #cbd8d0;
+      border-radius: 14px;
+      color: #466054;
+      background: linear-gradient(180deg, #fffefa, #f8fbf8);
+      text-decoration: none;
+      white-space: nowrap;
+      font-size: 16px;
+      font-weight: 750;
+      box-shadow: 0 5px 15px #5b695f13;
+      transition: .18s transform, .18s border-color, .18s background, .18s box-shadow;
+    }
+    .quick-nav a::before {
+      content: "";
+      width: 10px;
+      height: 10px;
+      flex: 0 0 auto;
+      border-radius: 50%;
+      background: var(--primary);
+      box-shadow: 0 0 0 5px #71978315;
+    }
+    .quick-nav a:nth-child(2)::before { background: #c68b54; box-shadow: 0 0 0 5px #c68b5415; }
+    .quick-nav a:nth-child(3)::before { background: #7392a0; box-shadow: 0 0 0 5px #7392a015; }
+    .quick-nav a:hover {
+      transform: translateY(-2px);
+      border-color: #759987;
+      background: #eef5f0;
+      box-shadow: 0 9px 20px #5b695f20;
+    }
+
+    main {
+      max-width: 1260px;
+      margin: auto;
+      padding: 28px 20px 64px;
+    }
+    .note {
+      margin-bottom: 20px;
+      padding: 18px 21px;
+      border: 1px solid #c7d6cd;
+      border-left: 4px solid var(--primary);
+      border-radius: 16px;
+      color: #46554e;
+      background: linear-gradient(120deg, #edf5f0, #fffefa);
+      box-shadow: 0 8px 24px #5d6b6110;
+    }
+    .note strong { color: var(--primary); }
+
+    .layout {
+      display: grid;
+      grid-template-columns: minmax(260px, 350px) minmax(0, 1fr);
+      gap: 20px;
+      align-items: start;
+    }
+    .players-panel,
+    .detail-panel {
+      border: 1px solid var(--line);
+      border-radius: 22px;
+      background: #fffefa;
+      box-shadow: 0 16px 38px #59675d22;
+    }
+    .players-panel { overflow: hidden; }
+    .panel-heading {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      padding: 16px 17px;
+      border-bottom: 1px solid var(--line);
+    }
+    h2, h3, p { margin-top: 0; }
+    .panel-heading h2 { margin: 0; font-size: 19px; }
+    .count {
+      min-width: 27px;
+      padding: 2px 9px;
+      border-radius: 999px;
+      color: var(--primary);
+      background: #edf5f0;
+      text-align: center;
+      font-size: 12px;
+    }
+    .players { display: grid; gap: 9px; padding: 12px; }
+    .player-card {
+      display: grid;
+      grid-template-columns: 52px 1fr auto;
+      gap: 12px;
+      align-items: center;
+      width: 100%;
+      padding: 12px;
+      border: 1px solid #d8e0da;
+      border-radius: 13px;
+      text-align: left;
+      background: #fafcf9;
+      cursor: pointer;
+      transition: .18s transform, .18s border-color, .18s background;
+    }
+    .player-card:hover,
+    .player-card.active {
+      transform: translateY(-1px);
+      border-color: #759987;
+      background: linear-gradient(135deg, #edf5f0, #fffaf4);
+      box-shadow: 0 8px 20px #5d6b6114;
+    }
+    .avatar {
+      display: grid;
+      place-items: center;
+      width: 52px;
+      aspect-ratio: 1;
+      border: 1px solid #92ac9f;
+      border-radius: 14px;
+      color: #fffefa;
+      background: linear-gradient(145deg, #6f9683, #c99065);
+      box-shadow: inset 0 0 16px #ffffff24;
+      font-size: 23px;
+      font-weight: 800;
+    }
+    .player-name { display: block; font-size: 17px; }
+    .player-meta { display: block; margin-top: 2px; color: var(--muted); font-size: 12px; }
+    .arrow { color: var(--primary); font-size: 22px; }
+    .empty {
+      display: none;
+      padding: 45px 18px;
+      color: var(--muted);
+      text-align: center;
+    }
+
+    .detail-panel { overflow: hidden; }
+    .detail-hero {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 18px;
+      padding: 22px 24px;
+      border-bottom: 1px solid var(--line);
+      background:
+        radial-gradient(circle at 88% 0, #dfc2a735, transparent 17rem),
+        linear-gradient(125deg, #e8f1ec, #fbf5ec);
+    }
+    .eyebrow {
+      margin-bottom: 4px;
+      color: var(--primary);
+      font-size: 12px;
+      font-weight: 800;
+      letter-spacing: .12em;
+      text-transform: uppercase;
+    }
+    .detail-hero h2 { margin: 0; font-size: clamp(24px, 4vw, 36px); }
+    .seed {
+      display: grid;
+      place-items: center;
+      width: 62px;
+      aspect-ratio: 1;
+      flex: 0 0 auto;
+      border: 1px solid #a6bcae;
+      border-radius: 50%;
+      color: var(--accent);
+      background: #fffefa;
+      font-size: 24px;
+      box-shadow: 0 0 0 8px #71978314;
+    }
+    .roster {
+      display: grid;
+      grid-template-columns: minmax(280px, 430px) minmax(220px, 1fr);
+      gap: 24px;
+      align-items: start;
+      padding: 24px;
+    }
+    .team-shot-wrap {
+      overflow: hidden;
+      padding: 10px;
+      border: 1px solid #c8d1ca;
+      border-radius: 17px;
+      background: #eeece5;
+      box-shadow: 0 18px 35px #4b5b502b;
+    }
+    .team-shot {
+      display: block;
+      width: 100%;
+      max-width: 359px;
+      height: auto;
+      margin: auto;
+      image-rendering: pixelated;
+    }
+    .roster-info h3 { margin: 0 0 14px; font-size: 19px; }
+    .members { display: grid; gap: 8px; margin: 0; padding: 0; list-style: none; }
+    .members li {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 10px 12px;
+      border: 1px solid #dbe2dc;
+      border-radius: 12px;
+      color: #3d4d45;
+      background: #f8faf7;
+      transition: .18s transform, .18s border-color;
+    }
+    .members li:hover { transform: translateX(3px); border-color: #9fb8aa; }
+    .slot {
+      display: grid;
+      place-items: center;
+      width: 25px;
+      height: 25px;
+      border-radius: 50%;
+      color: #fffefa;
+      background: linear-gradient(135deg, #6c927f, #c88c61);
+      font-size: 11px;
+      font-weight: 900;
+    }
+    .tip {
+      margin: 16px 0 0;
+      padding: 12px;
+      border-radius: 10px;
+      color: var(--muted);
+      background: #f3f0e8;
+      font-size: 12px;
+    }
+    footer {
+      margin-top: 42px;
+      padding-top: 20px;
+      border-top: 1px solid var(--line);
+      color: var(--muted);
+      font-size: 13px;
+      text-align: center;
+    }
+    .event-section {
+      margin-top: 34px;
+      scroll-margin-top: 84px;
+    }
+    .section-title {
+      display: flex;
+      align-items: end;
+      justify-content: space-between;
+      gap: 16px;
+      margin-bottom: 14px;
+    }
+    .section-title h2 { margin: 0; font-size: clamp(24px, 3vw, 34px); }
+    .section-title h2::before {
+      content: "";
+      display: inline-block;
+      width: 6px;
+      height: .82em;
+      margin-right: 11px;
+      border-radius: 99px;
+      background: linear-gradient(180deg, var(--primary), var(--accent));
+    }
+    .section-title span { color: var(--muted); font-size: 13px; }
+    .poster-card {
+      margin: 0;
+      padding: 10px;
+      overflow: hidden;
+      border: 1px solid var(--line);
+      border-radius: 22px;
+      background: #fffefa;
+      box-shadow: 0 18px 42px #59675d25;
+    }
+    .poster-card img {
+      display: block;
+      width: 100%;
+      height: auto;
+      border-radius: 11px;
+    }
+
+    [hidden] { display: none !important; }
+
+    @media (max-width: 850px) {
+      header { padding-top: 40px; padding-bottom: 40px; }
+      h1 { font-size: clamp(27px, 5.4vw, 43px); }
+      .layout { grid-template-columns: 1fr; }
+      .players { grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); }
+      .roster { grid-template-columns: 1fr; }
+      .team-shot { max-width: 359px; }
+    }
+    @media (max-width: 560px) {
+      h1 { white-space: normal; font-size: clamp(31px, 10vw, 43px); }
+      main { padding: 20px 12px 44px; }
+      .toolbar { grid-template-columns: 1fr; padding: 10px 12px; }
+      .status { display: none; }
+      .quick-nav { overflow-x: auto; padding-bottom: 2px; }
+      .note { padding: 14px 16px; }
+      .players { grid-template-columns: 1fr; }
+      .detail-hero { padding: 18px; }
+      .roster { padding: 14px; }
+      .roster-info { padding: 2px 2px 4px; }
+      .poster-card { padding: 4px; border-radius: 13px; }
+      .poster-card img { border-radius: 9px; }
+      .section-title { align-items: start; flex-direction: column; gap: 2px; }
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <div class="event-kicker">MEGA LINK TOURNAMENT</div>
+    <h1>辉可梦x更多Mega <span class="accent">MegaLink联动赛</span></h1>
+    <p class="subtitle">选手阵容、赛事奖励与比赛规则一站式在线查看。</p>
+    <div class="badges">
+      <span class="badge" id="playerBadge">已收录 1 位选手</span>
+      <span class="badge">大赛奖励一览</span>
+      <span class="badge">完整赛事规则</span>
+    </div>
+  </header>
+
+  <div class="topbar">
+    <div class="toolbar">
+      <div class="search-wrap">
+        <span class="search-icon" aria-hidden="true">⌕</span>
+        <input id="search" type="search" placeholder="搜索选手名称，例如：Acaciay" autocomplete="off" aria-label="搜索比赛选手">
+        <button id="clear" type="button" aria-label="清除搜索">清除</button>
+      </div>
+      <div class="status" id="status" aria-live="polite">显示 1 / 1 位选手</div>
+      <nav class="quick-nav" aria-label="页面导航">
+        <a href="#players-section">选手阵容</a>
+        <a href="#rewards">大赛奖励</a>
+        <a href="#rules">赛事规则</a>
+      </nav>
+    </div>
+  </div>
+
+  <main>
+    <div class="note"><strong>查询说明：</strong>输入选手名称，再点击选手卡片即可查看参赛阵容；也可以搜索阵容中的宝可梦昵称。</div>
+
+    <div class="layout" id="players-section">
+      <section class="players-panel" aria-label="参赛选手列表">
+        <div class="panel-heading">
+          <h2>参赛选手</h2>
+          <span class="count" id="count">1</span>
+        </div>
+        <div class="players" id="players"></div>
+        <div class="empty" id="empty">没有找到符合条件的选手。</div>
+      </section>
+
+      <section class="detail-panel" id="detail" aria-live="polite"></section>
+    </div>
+
+    <section class="event-section" id="rewards">
+      <div class="section-title">
+        <h2>大赛奖励一览</h2>
+        <span>冠军、亚军、四强与参赛抽奖奖励</span>
+      </div>
+      <figure class="poster-card">
+        <img src="tournament-rewards.png" alt="辉可梦x更多Mega联动赛大赛奖励一览" loading="lazy" decoding="async">
+      </figure>
+    </section>
+
+    <section class="event-section" id="rules">
+      <div class="section-title">
+        <h2>查看赛事规则</h2>
+        <span>MegaLink联动赛完整比赛规则</span>
+      </div>
+      <figure class="poster-card">
+        <img src="tournament-rules.png" alt="辉可梦x更多Mega MegaLink联动赛比赛规则" loading="lazy" decoding="async">
+      </figure>
+    </section>
+
+    <footer>辉可梦x更多Mega MegaLink联动赛 · 在线专题页</footer>
+  </main>
+
+  <script>
+    const players = [
+      {
+        id: "acaciay",
+        name: "Acaciay",
+        teamImage: "acaciay-team.png",
+        members: ["铁胜星", "永恒·毒安希", "三首恶龙", "密勒顿", "索奈加拉", "火暴兽"]
+      }
+    ];
+
+    const search = document.getElementById("search");
+    const clear = document.getElementById("clear");
+    const playersBox = document.getElementById("players");
+    const detail = document.getElementById("detail");
+    const empty = document.getElementById("empty");
+    const status = document.getElementById("status");
+    const count = document.getElementById("count");
+    let selectedId = players[0]?.id ?? null;
+
+    const normalize = value => value.toLocaleLowerCase("zh-CN").replace(/\s+/g, "").trim();
+
+    function renderDetail(player) {
+      if (!player) {
+        detail.hidden = true;
+        return;
+      }
+      detail.hidden = false;
+      detail.innerHTML = `
+        <div class="detail-hero">
+          <div>
+            <div class="eyebrow">PLAYER ROSTER</div>
+            <h2>${player.name} 参赛阵容：</h2>
+          </div>
+          <div class="seed" aria-hidden="true">◈</div>
+        </div>
+        <div class="roster">
+          <div class="team-shot-wrap">
+            <img class="team-shot" src="${player.teamImage}" alt="${player.name} 的参赛阵容，已隐藏携带物">
+          </div>
+          <div class="roster-info">
+            <h3>阵容成员</h3>
+            <ol class="members">
+              ${player.members.map((member, index) => `<li><span class="slot">${index + 1}</span><span>${member}</span></li>`).join("")}
+            </ol>
+            <p class="tip">阵容图片中的宝可梦携带物已隐藏。</p>
+          </div>
+        </div>`;
+    }
+
+    function selectPlayer(id) {
+      selectedId = id;
+      const player = players.find(item => item.id === id);
+      document.querySelectorAll(".player-card").forEach(card => {
+        card.classList.toggle("active", card.dataset.id === id);
+      });
+      renderDetail(player);
+      if (window.innerWidth < 851) detail.scrollIntoView({ behavior: "smooth", block: "start" });
+    }
+
+    function filterPlayers() {
+      const query = normalize(search.value);
+      const filtered = players.filter(player => normalize([player.name, ...player.members].join(" ")).includes(query));
+      playersBox.innerHTML = filtered.map(player => `
+        <button class="player-card${player.id === selectedId ? " active" : ""}" type="button" data-id="${player.id}">
+          <span class="avatar" aria-hidden="true">${player.name.slice(0, 1).toUpperCase()}</span>
+          <span><strong class="player-name">${player.name}</strong><span class="player-meta">参赛阵容 · ${player.members.length} 只</span></span>
+          <span class="arrow" aria-hidden="true">›</span>
+        </button>`).join("");
+
+      playersBox.querySelectorAll(".player-card").forEach(card => card.addEventListener("click", () => selectPlayer(card.dataset.id)));
+      empty.style.display = filtered.length ? "none" : "block";
+      count.textContent = filtered.length;
+      status.textContent = `显示 ${filtered.length} / ${players.length} 位选手`;
+      clear.style.display = search.value ? "block" : "none";
+
+      if (!filtered.length) {
+        renderDetail(null);
+      } else if (!filtered.some(player => player.id === selectedId)) {
+        selectedId = filtered[0].id;
+        renderDetail(filtered[0]);
+        playersBox.querySelector(`[data-id="${selectedId}"]`)?.classList.add("active");
+      } else {
+        renderDetail(players.find(player => player.id === selectedId));
+      }
+    }
+
+    search.addEventListener("input", filterPlayers);
+    clear.addEventListener("click", () => {
+      search.value = "";
+      search.focus();
+      filterPlayers();
+    });
+    document.addEventListener("keydown", event => {
+      if (event.key === "/" && document.activeElement !== search) {
+        event.preventDefault();
+        search.focus();
+      }
+      if (event.key === "Escape" && document.activeElement === search) {
+        search.value = "";
+        filterPlayers();
+        search.blur();
+      }
+    });
+
+    document.getElementById("playerBadge").textContent = `已收录 ${players.length} 位选手`;
+    filterPlayers();
+  </script>
+</body>
+</html>
