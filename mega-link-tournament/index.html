@@ -40,12 +40,20 @@
     button, input { font: inherit; }
     button { color: inherit; }
 
+    .top-visual-zone {
+      border-bottom: 1px solid #c9d9dc;
+      background:
+        linear-gradient(180deg, #f7fbfac4 0%, #f4faf8ad 38%, #f6f3ebed 100%),
+        url("tournament-hero-background.jpg") center 43% / cover no-repeat;
+      box-shadow: inset 0 -28px 48px #f6f3eb80;
+    }
+
     header {
       position: relative;
       overflow: hidden;
       padding: 56px max(20px, calc((100% - 1260px) / 2)) 50px;
       border-bottom: 1px solid var(--line);
-      background: linear-gradient(140deg, #e7f1ebee, #faf6eeee);
+      background: linear-gradient(140deg, #e7f4f1a8, #fbf8f18f);
     }
     header::after {
       content: "";
@@ -213,6 +221,7 @@
     .quick-nav a:nth-child(3):hover { border-color: #d2a25f; background: #ffedd2; }
     .quick-nav a:nth-child(4):hover { border-color: #77a7b7; background: #e2f1f5; }
 
+    .top-content,
     main {
       max-width: 1260px;
       margin: auto;
@@ -467,7 +476,7 @@
       background: var(--rank);
     }
     .winner-card.champion { --rank: #c28a2e; --rank-soft: #fff6df; }
-    .winner-card.runner-up { --rank: #bd585c; --rank-soft: #fbecec; }
+    .winner-card.runner-up { --rank: #8264b5; --rank-soft: #f0eafa; }
     .winner-card.top-four-a,
     .winner-card.top-four-b { --rank: #5f9276; --rank-soft: #edf6f0; }
     .winner-rank {
@@ -534,6 +543,7 @@
     }
     @media (max-width: 560px) {
       h1 { white-space: normal; font-size: clamp(31px, 10vw, 43px); }
+      .top-content,
       main { padding: 20px 12px 44px; }
       .toolbar { grid-template-columns: 1fr; padding: 10px 12px; }
       .status { display: none; }
@@ -552,6 +562,7 @@
   </style>
 </head>
 <body>
+  <div class="top-visual-zone">
   <header>
     <div class="event-kicker">MEGA LINK TOURNAMENT</div>
     <h1>辉可梦x更多Mega <span class="accent">MegaLink联动赛</span></h1>
@@ -581,7 +592,7 @@
     </div>
   </div>
 
-  <main>
+  <div class="top-content">
     <div class="note"><strong>查询说明：</strong>输入选手名称，再点击选手卡片即可查看参赛阵容；也可以搜索阵容中的宝可梦昵称。</div>
 
     <div class="layout" id="players-section">
@@ -596,6 +607,10 @@
 
       <section class="detail-panel" id="detail" aria-live="polite"></section>
     </div>
+  </div>
+  </div>
+
+  <main>
 
     <section class="event-section" id="rules">
       <div class="section-title">
