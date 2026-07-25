@@ -1,0 +1,25 @@
+{
+  "version": 1,
+  "eventTitle": "辉可梦x更多Mega MegaLink联动赛",
+  "updatedAt": null,
+  "settings": {
+    "totalRounds": 5,
+    "winPoints": 3,
+    "drawPoints": 1,
+    "lossPoints": 0,
+    "byePoints": 3
+  },
+  "players": [
+    {
+      "id": "acaciay",
+      "name": "Acaciay",
+      "active": true
+    },
+    {
+      "id": "xiao_hui_c233",
+      "name": "xiao_hui_c233",
+      "active": true
+    }
+  ],
+  "rounds": []
+}
