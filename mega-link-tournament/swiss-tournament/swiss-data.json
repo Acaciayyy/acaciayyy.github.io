@@ -1,7 +1,7 @@
 {
   "version": 1,
   "eventTitle": "辉可梦x更多Mega MegaLink联动赛",
-  "updatedAt": "2026-07-26T01:08:43.646Z",
+  "updatedAt": "2026-07-26T01:11:39.512Z",
   "settings": {
     "totalRounds": 5,
     "winPoints": 3,
@@ -210,114 +210,234 @@
           "table": 1,
           "playerA": "xiao_hui_c233",
           "playerB": "tian_qing5",
-          "result": "pending"
+          "result": "a"
         },
         {
           "table": 2,
           "playerA": "98989",
           "playerB": "114141",
-          "result": "pending"
+          "result": "a"
         },
         {
           "table": 3,
           "playerA": "yuki",
           "playerB": "youshengxiao",
-          "result": "pending"
+          "result": "a"
         },
         {
           "table": 4,
           "playerA": "icechitandaeru",
           "playerB": "insectawa",
-          "result": "pending"
+          "result": "a"
         },
         {
           "table": 5,
           "playerA": "the_shine_xk",
           "playerB": "theyotsuba",
-          "result": "pending"
+          "result": "a"
         },
         {
           "table": 6,
           "playerA": "mangofart",
           "playerB": "michellexin",
-          "result": "pending"
+          "result": "a"
         },
         {
           "table": 7,
           "playerA": "fwawa",
           "playerB": "giopie",
-          "result": "pending"
+          "result": "a"
         },
         {
           "table": 8,
           "playerA": "xiaoshi0_0",
           "playerB": "xiri_ovo",
-          "result": "pending"
+          "result": "a"
         },
         {
           "table": 9,
           "playerA": "m0_om",
           "playerB": "lingqiu",
-          "result": "pending"
+          "result": "a"
         },
         {
           "table": 10,
           "playerA": "yuetian",
           "playerB": "xzmcat",
-          "result": "pending"
+          "result": "a"
         },
         {
           "table": 11,
           "playerA": "hly233",
           "playerB": "kk537",
-          "result": "pending"
+          "result": "a"
         },
         {
           "table": 12,
           "playerA": "mili2",
           "playerB": "sanqiu_liuhua",
-          "result": "pending"
+          "result": "a"
         },
         {
           "table": 13,
           "playerA": "dick_man",
           "playerB": "blank",
-          "result": "pending"
+          "result": "a"
         },
         {
           "table": 14,
           "playerA": "wdk186",
           "playerB": "wcnmlgp",
-          "result": "pending"
+          "result": "a"
         },
         {
           "table": 15,
           "playerA": "jbod",
           "playerB": "jiegeng2333",
-          "result": "pending"
+          "result": "a"
         },
         {
           "table": 16,
           "playerA": "abee_sama",
           "playerB": "acaciay",
-          "result": "pending"
+          "result": "a"
         },
         {
           "table": 17,
           "playerA": "hbnjkm",
           "playerB": "hao",
-          "result": "pending"
+          "result": "a"
         },
         {
           "table": 18,
           "playerA": "adm",
           "playerB": "baimo",
-          "result": "pending"
+          "result": "a"
         },
         {
           "table": 19,
           "playerA": "qiluo1",
           "playerB": "stvchan",
+          "result": "a"
+        }
+      ]
+    },
+    {
+      "number": 2,
+      "generatedAt": "2026-07-26T01:11:38.222Z",
+      "pairings": [
+        {
+          "table": 1,
+          "playerA": "98989",
+          "playerB": "abee_sama",
+          "result": "pending"
+        },
+        {
+          "table": 2,
+          "playerA": "adm",
+          "playerB": "dick_man",
+          "result": "pending"
+        },
+        {
+          "table": 3,
+          "playerA": "fwawa",
+          "playerB": "hbnjkm",
+          "result": "pending"
+        },
+        {
+          "table": 4,
+          "playerA": "hly233",
+          "playerB": "icechitandaeru",
+          "result": "pending"
+        },
+        {
+          "table": 5,
+          "playerA": "jbod",
+          "playerB": "m0_om",
+          "result": "pending"
+        },
+        {
+          "table": 6,
+          "playerA": "mangofart",
+          "playerB": "mili2",
+          "result": "pending"
+        },
+        {
+          "table": 7,
+          "playerA": "qiluo1",
+          "playerB": "the_shine_xk",
+          "result": "pending"
+        },
+        {
+          "table": 8,
+          "playerA": "wdk186",
+          "playerB": "xiao_hui_c233",
+          "result": "pending"
+        },
+        {
+          "table": 9,
+          "playerA": "xiaoshi0_0",
+          "playerB": "yuetian",
+          "result": "pending"
+        },
+        {
+          "table": 10,
+          "playerA": "yuki",
+          "playerB": "114141",
+          "result": "pending"
+        },
+        {
+          "table": 11,
+          "playerA": "acaciay",
+          "playerB": "baimo",
+          "result": "pending"
+        },
+        {
+          "table": 12,
+          "playerA": "blank",
+          "playerB": "giopie",
+          "result": "pending"
+        },
+        {
+          "table": 13,
+          "playerA": "hao",
+          "playerB": "insectawa",
+          "result": "pending"
+        },
+        {
+          "table": 14,
+          "playerA": "jiegeng2333",
+          "playerB": "kk537",
+          "result": "pending"
+        },
+        {
+          "table": 15,
+          "playerA": "lingqiu",
+          "playerB": "michellexin",
+          "result": "pending"
+        },
+        {
+          "table": 16,
+          "playerA": "sanqiu_liuhua",
+          "playerB": "stvchan",
+          "result": "pending"
+        },
+        {
+          "table": 17,
+          "playerA": "theyotsuba",
+          "playerB": "tian_qing5",
+          "result": "pending"
+        },
+        {
+          "table": 18,
+          "playerA": "wcnmlgp",
+          "playerB": "xiri_ovo",
+          "result": "pending"
+        },
+        {
+          "table": 19,
+          "playerA": "xzmcat",
+          "playerB": "youshengxiao",
           "result": "pending"
         }
       ]
