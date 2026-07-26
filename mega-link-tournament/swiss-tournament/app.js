@@ -36,8 +36,13 @@ const elements = {
   updatedAt: byId("updatedAt"),
   standingsBody: byId("standingsBody"),
   standingsEmpty: byId("standingsEmpty"),
+  scheduleSearchInput: byId("scheduleSearchInput"),
+  scheduleSearchClear: byId("scheduleSearchClear"),
+  scheduleSearchStatus: byId("scheduleSearchStatus"),
   scheduleFlow: byId("scheduleFlow"),
   scheduleEmpty: byId("scheduleEmpty"),
+  scheduleEmptyTitle: byId("scheduleEmptyTitle"),
+  scheduleEmptyText: byId("scheduleEmptyText"),
   adminOpen: byId("adminOpen"),
   adminShell: byId("adminShell"),
   adminBackdrop: byId("adminBackdrop"),
@@ -293,11 +298,51 @@ function matchPresentation(pairing) {
 
 function renderSchedule() {
   const names = new Map(state.players.map(player => [player.id, player.name]));
-  elements.scheduleEmpty.hidden = state.rounds.length > 0;
-  elements.scheduleFlow.hidden = state.rounds.length === 0;
-  elements.scheduleFlow.innerHTML = state.rounds.map(round => {
+  const query = elements.scheduleSearchInput.value.trim().toLocaleLowerCase("zh-CN");
+  const matchingPlayers = query
+    ? state.players.filter(player =>
+      player.id.toLocaleLowerCase("zh-CN").includes(query) ||
+      player.name.toLocaleLowerCase("zh-CN").includes(query)
+    )
+    : state.players;
+  const matchingIds = new Set(matchingPlayers.map(player => player.id));
+  let matchCount = 0;
+  const visibleRounds = state.rounds.map(round => {
+    const pairings = query
+      ? round.pairings.filter(pairing => matchingIds.has(pairing.playerA) || matchingIds.has(pairing.playerB))
+      : round.pairings;
+    matchCount += pairings.length;
+    return { round, pairings };
+  }).filter(item => item.pairings.length > 0);
+
+  elements.scheduleSearchClear.hidden = !query;
+  if (!query) {
+    elements.scheduleSearchStatus.textContent = "输入选手 ID，可查看他每一轮和谁对战。";
+  } else if (!matchingPlayers.length) {
+    elements.scheduleSearchStatus.textContent = `未找到选手 ID“${elements.scheduleSearchInput.value.trim()}”。`;
+  } else if (!matchCount) {
+    elements.scheduleSearchStatus.textContent = `已找到“${matchingPlayers.map(player => player.name).join("、")}”，目前还没有已生成的对阵。`;
+  } else {
+    elements.scheduleSearchStatus.textContent = `已找到 ${matchCount} 场相关对阵，赛程线中仅显示包含“${elements.scheduleSearchInput.value.trim()}”的比赛。`;
+  }
+
+  const showEmpty = visibleRounds.length === 0;
+  elements.scheduleEmpty.hidden = !showEmpty;
+  elements.scheduleFlow.hidden = showEmpty;
+  if (!query && !state.rounds.length) {
+    elements.scheduleEmptyTitle.textContent = "赛程尚未生成";
+    elements.scheduleEmptyText.textContent = "管理员完成选手名单后即可生成第一轮对阵。";
+  } else if (!matchingPlayers.length) {
+    elements.scheduleEmptyTitle.textContent = "未找到选手";
+    elements.scheduleEmptyText.textContent = "请检查选手 ID 是否输入正确。";
+  } else if (!matchCount) {
+    elements.scheduleEmptyTitle.textContent = "暂无相关对阵";
+    elements.scheduleEmptyText.textContent = "该选手目前还没有已生成的比赛。";
+  }
+
+  elements.scheduleFlow.innerHTML = visibleRounds.map(({ round, pairings }) => {
     const complete = isRoundComplete(round);
-    const matches = round.pairings.map(pairing => {
+    const matches = pairings.map(pairing => {
       const view = matchPresentation(pairing);
       const playerA = names.get(pairing.playerA) || "未知选手";
       const playerB = pairing.playerB === null ? "轮空" : (names.get(pairing.playerB) || "未知选手");
@@ -758,6 +803,12 @@ function closeAdmin() {
 }
 
 function bindEvents() {
+  elements.scheduleSearchInput.addEventListener("input", renderSchedule);
+  elements.scheduleSearchClear.addEventListener("click", () => {
+    elements.scheduleSearchInput.value = "";
+    renderSchedule();
+    elements.scheduleSearchInput.focus();
+  });
   elements.adminOpen.addEventListener("click", openAdmin);
   elements.adminClose.addEventListener("click", closeAdmin);
   elements.adminBackdrop.addEventListener("click", closeAdmin);

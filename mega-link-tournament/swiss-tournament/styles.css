@@ -203,6 +203,37 @@ tr:nth-child(2) .rank-number { color: #5f4b85; background: var(--purple-soft); }
 .player-cell { font-weight: 850; }
 .points-cell { color: var(--cyan-dark); font-size: 18px; font-weight: 900; }
 
+.schedule-search {
+  display: grid;
+  gap: 7px;
+  max-width: 620px;
+  margin: -2px 0 18px;
+}
+.schedule-search label { color: #486762; font-size: 12px; font-weight: 900; }
+.schedule-search-row { display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: 8px; }
+.schedule-search input {
+  width: 100%;
+  min-height: 46px;
+  padding: 10px 14px;
+  border: 1px solid #bfd3cf;
+  border-radius: 13px;
+  color: var(--ink);
+  background: #fffefaf2;
+  font: inherit;
+  outline: none;
+}
+.schedule-search input:focus { border-color: var(--cyan); box-shadow: 0 0 0 3px #4c9ca622; }
+.schedule-search button {
+  min-width: 72px;
+  border: 0;
+  border-radius: 13px;
+  color: #fff;
+  background: var(--cyan-dark);
+  font-weight: 850;
+  cursor: pointer;
+}
+.schedule-search p { min-height: 18px; margin: 0; color: var(--muted); font-size: 12px; }
+
 .schedule-scroll { overflow-x: auto; padding: 4px 3px 12px; }
 .schedule-flow {
   position: relative;

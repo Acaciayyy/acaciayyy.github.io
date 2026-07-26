@@ -82,12 +82,20 @@
         </div>
         <span class="section-note">左右滑动可查看全部轮次</span>
       </div>
+      <div class="schedule-search" role="search">
+        <label for="scheduleSearchInput">搜索选手 ID</label>
+        <div class="schedule-search-row">
+          <input id="scheduleSearchInput" type="search" autocomplete="off" spellcheck="false" placeholder="输入选手 ID，例如 Acaciay">
+          <button id="scheduleSearchClear" type="button" hidden>清除</button>
+        </div>
+        <p id="scheduleSearchStatus" aria-live="polite">输入选手 ID，可查看他每一轮和谁对战。</p>
+      </div>
       <div class="schedule-scroll">
         <div class="schedule-flow" id="scheduleFlow"></div>
         <div class="empty-state schedule-empty" id="scheduleEmpty" hidden>
           <span class="empty-icon">◇</span>
-          <strong>赛程尚未生成</strong>
-          <small>管理员完成选手名单后即可生成第一轮对阵。</small>
+          <strong id="scheduleEmptyTitle">赛程尚未生成</strong>
+          <small id="scheduleEmptyText">管理员完成选手名单后即可生成第一轮对阵。</small>
         </div>
       </div>
     </section>
@@ -126,17 +134,17 @@
 
       <div class="admin-content">
         <section class="login-view" id="loginView">
-          <div class="security-mark">只允许 Acaciayyy</div>
-          <h3>连接 GitHub 管理权限</h3>
-          <p>请输入仅授权此仓库“Contents：Read and write”的细粒度令牌。令牌只保留在当前页面内存中，关闭或刷新页面后立即消失。</p>
-          <label for="tokenInput">GitHub 细粒度令牌</label>
+          <div class="security-mark">仅允许小辉与Acacia使用</div>
+          <h3>连接网站管理权限</h3>
+          <p>请管理员输入网站专用管理令牌后开始使用赛程管理器</p>
+          <label for="tokenInput">辉可梦瑞士轮网站管理令牌</label>
           <div class="token-row">
             <input id="tokenInput" type="password" autocomplete="off" spellcheck="false" placeholder="github_pat_…">
             <button class="primary-button" id="connectButton" type="button">验证身份</button>
           </div>
           <a class="guide-link" href="https://github.com/settings/personal-access-tokens/new" target="_blank" rel="noopener noreferrer">创建细粒度令牌 ↗</a>
           <div class="security-note">
-            <strong>权限设置：</strong>仅选择仓库 <code>huikemeng-extra-paradox-wiki</code>，Repository permissions 中只开启 Contents 的 Read and write。
+            <strong>权限设置：</strong>本页面仅允许管理员使用发布与管理赛程
           </div>
           <p class="form-message" id="loginMessage" aria-live="polite"></p>
         </section>
