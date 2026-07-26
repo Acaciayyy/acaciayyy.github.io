@@ -88,7 +88,7 @@
           <input id="scheduleSearchInput" type="search" autocomplete="off" spellcheck="false" placeholder="输入选手 ID，例如 Acaciay">
           <button id="scheduleSearchClear" type="button" hidden>清除</button>
         </div>
-        <p id="scheduleSearchStatus" aria-live="polite">输入选手 ID，可查看他每一轮和谁对战。</p>
+        <p id="scheduleSearchStatus" aria-live="polite">输入选手 ID，可查看他的瑞士轮与淘汰赛对阵。</p>
       </div>
       <div class="schedule-scroll">
         <div class="schedule-flow" id="scheduleFlow"></div>
@@ -96,6 +96,21 @@
           <span class="empty-icon">◇</span>
           <strong id="scheduleEmptyTitle">赛程尚未生成</strong>
           <small id="scheduleEmptyText">管理员完成选手名单后即可生成第一轮对阵。</small>
+        </div>
+      </div>
+      <div class="playoff-heading">
+        <div>
+          <span class="eyebrow">TOP 8 KNOCKOUT</span>
+          <h3>八强淘汰赛</h3>
+        </div>
+        <span class="playoff-status" id="playoffStatus">等待瑞士轮前 8 名</span>
+      </div>
+      <div class="playoff-scroll">
+        <div class="playoff-flow" id="playoffFlow"></div>
+        <div class="empty-state playoff-empty" id="playoffEmpty">
+          <span class="empty-icon">◇</span>
+          <strong id="playoffEmptyTitle">淘汰赛尚未生成</strong>
+          <small id="playoffEmptyText">瑞士轮全部完成后，由管理员按积分排名生成八强对阵。</small>
         </div>
       </div>
     </section>
@@ -181,11 +196,34 @@
               </div>
               <div class="admin-actions">
                 <button class="primary-button" id="generateRoundButton" type="button">生成下一轮</button>
+                <button class="danger-button" id="resetTournamentButton" type="button">重置赛程</button>
                 <button class="save-button" id="saveButton" type="button">保存到 GitHub</button>
                 <button class="ghost-button" id="reloadButton" type="button">放弃修改并重载</button>
               </div>
+              <div class="admin-player-search" role="search">
+                <label for="adminPlayerSearchInput">搜索选手 ID 并录入胜负</label>
+                <div class="admin-player-search-row">
+                  <input id="adminPlayerSearchInput" type="search" autocomplete="off" spellcheck="false" placeholder="输入选手 ID，例如 Acaciay">
+                  <button id="adminPlayerSearchClear" type="button" hidden>清除</button>
+                </div>
+                <small id="adminPlayerSearchStatus" aria-live="polite">输入选手 ID，可筛选瑞士轮与淘汰赛并直接录入胜负。</small>
+              </div>
               <p class="control-message" id="controlMessage" aria-live="polite"></p>
               <div class="round-editor" id="roundEditor"></div>
+              <div class="playoff-manager-heading">
+                <div>
+                  <span>KNOCKOUT</span>
+                  <h4>八强淘汰赛</h4>
+                </div>
+                <span class="round-progress" id="managerPlayoffProgress">等待瑞士轮</span>
+              </div>
+              <div class="admin-actions playoff-actions">
+                <button class="playoff-button" id="generateQuarterfinalButton" type="button">生成八强淘汰赛</button>
+                <button class="playoff-button" id="generateSemifinalButton" type="button">生成半决赛</button>
+                <button class="playoff-button" id="generateFinalButton" type="button">生成决赛</button>
+                <button class="danger-button" id="resetPlayoffsButton" type="button">重置淘汰赛</button>
+              </div>
+              <div class="playoff-editor" id="playoffEditor"></div>
             </section>
           </div>
         </section>

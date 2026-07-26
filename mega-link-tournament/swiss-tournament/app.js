@@ -6,6 +6,11 @@ const BRANCH = "main";
 const DATA_PATH = "mega-link-tournament/swiss-tournament/swiss-data.json";
 const ADMIN_LOGIN = "acaciayyy";
 const API_VERSION = "2022-11-28";
+const PLAYOFF_STAGE_CONFIG = [
+  { id: "quarterfinal", name: "八强赛", size: 4 },
+  { id: "semifinal", name: "半决赛", size: 2 },
+  { id: "final", name: "决赛", size: 1 }
+];
 
 const DEFAULT_DATA = {
   version: 1,
@@ -22,10 +27,12 @@ const DEFAULT_DATA = {
     { id: "acaciay", name: "Acaciay", active: true },
     { id: "xiao_hui_c233", name: "xiao_hui_c233", active: true }
   ],
-  rounds: []
+  rounds: [],
+  playoffs: []
 };
 
 const RESULT_VALUES = new Set(["pending", "a", "draw", "b", "bye"]);
+const PLAYOFF_RESULT_VALUES = new Set(["pending", "a", "b"]);
 const byId = id => document.getElementById(id);
 
 const elements = {
@@ -43,6 +50,11 @@ const elements = {
   scheduleEmpty: byId("scheduleEmpty"),
   scheduleEmptyTitle: byId("scheduleEmptyTitle"),
   scheduleEmptyText: byId("scheduleEmptyText"),
+  playoffStatus: byId("playoffStatus"),
+  playoffFlow: byId("playoffFlow"),
+  playoffEmpty: byId("playoffEmpty"),
+  playoffEmptyTitle: byId("playoffEmptyTitle"),
+  playoffEmptyText: byId("playoffEmptyText"),
   adminOpen: byId("adminOpen"),
   adminShell: byId("adminShell"),
   adminBackdrop: byId("adminBackdrop"),
@@ -60,10 +72,20 @@ const elements = {
   playersLockHint: byId("playersLockHint"),
   managerRoundProgress: byId("managerRoundProgress"),
   generateRoundButton: byId("generateRoundButton"),
+  resetTournamentButton: byId("resetTournamentButton"),
+  generateQuarterfinalButton: byId("generateQuarterfinalButton"),
+  generateSemifinalButton: byId("generateSemifinalButton"),
+  generateFinalButton: byId("generateFinalButton"),
+  resetPlayoffsButton: byId("resetPlayoffsButton"),
+  managerPlayoffProgress: byId("managerPlayoffProgress"),
   saveButton: byId("saveButton"),
   reloadButton: byId("reloadButton"),
+  adminPlayerSearchInput: byId("adminPlayerSearchInput"),
+  adminPlayerSearchClear: byId("adminPlayerSearchClear"),
+  adminPlayerSearchStatus: byId("adminPlayerSearchStatus"),
   controlMessage: byId("controlMessage"),
-  roundEditor: byId("roundEditor")
+  roundEditor: byId("roundEditor"),
+  playoffEditor: byId("playoffEditor")
 };
 
 let state = structuredClone(DEFAULT_DATA);
@@ -120,6 +142,36 @@ function normalizeData(input) {
     });
   }
 
+  const playoffs = [];
+  const usedStages = new Set();
+  for (const stage of Array.isArray(source.playoffs) ? source.playoffs : []) {
+    const config = PLAYOFF_STAGE_CONFIG.find(item => item.id === stage?.id);
+    if (!config || usedStages.has(config.id)) continue;
+    const pairings = [];
+    for (const [pairIndex, pairing] of (Array.isArray(stage?.pairings) ? stage.pairings : []).entries()) {
+      const playerA = cleanText(pairing?.playerA);
+      const playerB = cleanText(pairing?.playerB);
+      if (!validPlayerIds.has(playerA) || !validPlayerIds.has(playerB) || playerA === playerB) continue;
+      pairings.push({
+        table: clampInteger(pairing?.table, 1, 99, pairIndex + 1),
+        playerA,
+        playerB,
+        result: PLAYOFF_RESULT_VALUES.has(pairing?.result) ? pairing.result : "pending"
+      });
+    }
+    if (!pairings.length) continue;
+    usedStages.add(config.id);
+    playoffs.push({
+      id: config.id,
+      name: config.name,
+      generatedAt: cleanText(stage?.generatedAt) || null,
+      pairings: pairings.slice(0, config.size)
+    });
+  }
+  playoffs.sort((left, right) =>
+    PLAYOFF_STAGE_CONFIG.findIndex(item => item.id === left.id) - PLAYOFF_STAGE_CONFIG.findIndex(item => item.id === right.id)
+  );
+
   return {
     version: 1,
     eventTitle: cleanText(source.eventTitle, DEFAULT_DATA.eventTitle).slice(0, 120),
@@ -132,7 +184,8 @@ function normalizeData(input) {
       byePoints: clampInteger(settings.byePoints, 0, 20, 3)
     },
     players,
-    rounds
+    rounds,
+    playoffs
   };
 }
 
@@ -173,6 +226,30 @@ function formatDate(value) {
 
 function isRoundComplete(round) {
   return round.pairings.length > 0 && round.pairings.every(pairing => pairing.result !== "pending");
+}
+
+function isSwissComplete(data = state) {
+  return data.rounds.length >= data.settings.totalRounds &&
+    data.rounds.slice(0, data.settings.totalRounds).every(isRoundComplete);
+}
+
+function isPlayoffStageComplete(stage) {
+  return Boolean(stage?.pairings.length) && stage.pairings.every(pairing => pairing.result === "a" || pairing.result === "b");
+}
+
+function getPlayoffStage(id, data = state) {
+  return data.playoffs.find(stage => stage.id === id);
+}
+
+function playoffWinner(pairing) {
+  if (pairing?.result === "a") return pairing.playerA;
+  if (pairing?.result === "b") return pairing.playerB;
+  return "";
+}
+
+function playoffChampion(data = state) {
+  const finalStage = getPlayoffStage("final", data);
+  return isPlayoffStageComplete(finalStage) ? playoffWinner(finalStage.pairings[0]) : "";
 }
 
 function calculateStandings(data = state) {
@@ -255,10 +332,19 @@ function renderPublic() {
   elements.eventTitle.textContent = state.eventTitle;
   elements.updatedAt.textContent = formatDate(state.updatedAt);
 
-  if (!state.rounds.length) {
+  const championId = playoffChampion();
+  if (championId) {
+    const championName = state.players.find(player => player.id === championId)?.name || "未知选手";
+    elements.eventStatus.textContent = `赛事结束 · 冠军 ${championName}`;
+  } else if (state.playoffs.length) {
+    const latestStage = state.playoffs[state.playoffs.length - 1];
+    elements.eventStatus.textContent = isPlayoffStageComplete(latestStage)
+      ? `${latestStage.name}已完成，等待下一阶段`
+      : `${latestStage.name}进行中`;
+  } else if (!state.rounds.length) {
     elements.eventStatus.textContent = "赛程尚未开始";
-  } else if (completedRounds === totalRounds && state.rounds.length === totalRounds) {
-    elements.eventStatus.textContent = "全部轮次已完成";
+  } else if (isSwissComplete()) {
+    elements.eventStatus.textContent = "瑞士轮已完成，等待八强淘汰赛";
   } else if (!isRoundComplete(state.rounds[state.rounds.length - 1])) {
     elements.eventStatus.textContent = `第 ${state.rounds.length} 轮进行中`;
   } else {
@@ -271,11 +357,12 @@ function renderPublic() {
 
 function renderStandings() {
   const standings = calculateStandings();
+  const showQualifiers = isSwissComplete() && standings.length >= 8;
   elements.standingsEmpty.hidden = standings.length > 0;
   elements.standingsBody.innerHTML = standings.map((record, index) => `
     <tr>
       <td><span class="rank-number">${index + 1}</span></td>
-      <td class="player-cell">${escapeHtml(record.name)}</td>
+      <td class="player-cell">${escapeHtml(record.name)}${showQualifiers && index < 8 ? '<span class="qualifier-badge">晋级八强</span>' : ""}</td>
       <td>${record.played}</td>
       <td>${record.wins}</td>
       <td>${record.draws}</td>
@@ -298,7 +385,8 @@ function matchPresentation(pairing) {
 
 function renderSchedule() {
   const names = new Map(state.players.map(player => [player.id, player.name]));
-  const query = elements.scheduleSearchInput.value.trim().toLocaleLowerCase("zh-CN");
+  const rawQuery = elements.scheduleSearchInput.value.trim();
+  const query = rawQuery.toLocaleLowerCase("zh-CN");
   const matchingPlayers = query
     ? state.players.filter(player =>
       player.id.toLocaleLowerCase("zh-CN").includes(query) ||
@@ -306,24 +394,34 @@ function renderSchedule() {
     )
     : state.players;
   const matchingIds = new Set(matchingPlayers.map(player => player.id));
-  let matchCount = 0;
+  let swissMatchCount = 0;
   const visibleRounds = state.rounds.map(round => {
     const pairings = query
       ? round.pairings.filter(pairing => matchingIds.has(pairing.playerA) || matchingIds.has(pairing.playerB))
       : round.pairings;
-    matchCount += pairings.length;
+    swissMatchCount += pairings.length;
     return { round, pairings };
   }).filter(item => item.pairings.length > 0);
 
+  let playoffMatchCount = 0;
+  const visiblePlayoffStages = state.playoffs.map(stage => {
+    const pairings = query
+      ? stage.pairings.filter(pairing => matchingIds.has(pairing.playerA) || matchingIds.has(pairing.playerB))
+      : stage.pairings;
+    playoffMatchCount += pairings.length;
+    return { stage, pairings };
+  }).filter(item => item.pairings.length > 0);
+  const matchCount = swissMatchCount + playoffMatchCount;
+
   elements.scheduleSearchClear.hidden = !query;
   if (!query) {
-    elements.scheduleSearchStatus.textContent = "输入选手 ID，可查看他每一轮和谁对战。";
+    elements.scheduleSearchStatus.textContent = "输入选手 ID，可查看他的瑞士轮与淘汰赛对阵。";
   } else if (!matchingPlayers.length) {
-    elements.scheduleSearchStatus.textContent = `未找到选手 ID“${elements.scheduleSearchInput.value.trim()}”。`;
+    elements.scheduleSearchStatus.textContent = `未找到选手 ID“${rawQuery}”。`;
   } else if (!matchCount) {
     elements.scheduleSearchStatus.textContent = `已找到“${matchingPlayers.map(player => player.name).join("、")}”，目前还没有已生成的对阵。`;
   } else {
-    elements.scheduleSearchStatus.textContent = `已找到 ${matchCount} 场相关对阵，赛程线中仅显示包含“${elements.scheduleSearchInput.value.trim()}”的比赛。`;
+    elements.scheduleSearchStatus.textContent = `已找到 ${matchCount} 场相关对阵，赛程线中仅显示包含“${rawQuery}”的比赛。`;
   }
 
   const showEmpty = visibleRounds.length === 0;
@@ -335,9 +433,9 @@ function renderSchedule() {
   } else if (!matchingPlayers.length) {
     elements.scheduleEmptyTitle.textContent = "未找到选手";
     elements.scheduleEmptyText.textContent = "请检查选手 ID 是否输入正确。";
-  } else if (!matchCount) {
-    elements.scheduleEmptyTitle.textContent = "暂无相关对阵";
-    elements.scheduleEmptyText.textContent = "该选手目前还没有已生成的比赛。";
+  } else if (!swissMatchCount) {
+    elements.scheduleEmptyTitle.textContent = "暂无瑞士轮对阵";
+    elements.scheduleEmptyText.textContent = "该选手目前没有可显示的瑞士轮比赛。";
   }
 
   elements.scheduleFlow.innerHTML = visibleRounds.map(({ round, pairings }) => {
@@ -359,6 +457,61 @@ function renderSchedule() {
       <section class="round-column">
         <div class="round-heading">
           <strong>第 ${round.number} 轮</strong>
+          <span class="${complete ? "complete" : ""}">${complete ? "已完成" : "进行中"}</span>
+        </div>
+        <div class="matches">${matches}</div>
+      </section>
+    `;
+  }).join("");
+
+  const championId = playoffChampion();
+  const championName = championId ? (names.get(championId) || "未知选手") : "";
+  if (championName) {
+    elements.playoffStatus.textContent = `冠军 · ${championName}`;
+  } else if (state.playoffs.length) {
+    const latestStage = state.playoffs[state.playoffs.length - 1];
+    elements.playoffStatus.textContent = isPlayoffStageComplete(latestStage)
+      ? `${latestStage.name}已完成`
+      : `${latestStage.name}进行中`;
+  } else if (isSwissComplete() && calculateStandings().length >= 8) {
+    elements.playoffStatus.textContent = "瑞士轮结束 · 等待生成八强";
+  } else {
+    elements.playoffStatus.textContent = "等待瑞士轮前 8 名";
+  }
+
+  const showPlayoffEmpty = visiblePlayoffStages.length === 0;
+  elements.playoffEmpty.hidden = !showPlayoffEmpty;
+  elements.playoffFlow.hidden = showPlayoffEmpty;
+  if (!query && !state.playoffs.length) {
+    elements.playoffEmptyTitle.textContent = "淘汰赛尚未生成";
+    elements.playoffEmptyText.textContent = "瑞士轮全部完成后，由管理员按积分排名生成八强对阵。";
+  } else if (!matchingPlayers.length) {
+    elements.playoffEmptyTitle.textContent = "未找到选手";
+    elements.playoffEmptyText.textContent = "请检查选手 ID 是否输入正确。";
+  } else if (!playoffMatchCount) {
+    elements.playoffEmptyTitle.textContent = "暂无淘汰赛对阵";
+    elements.playoffEmptyText.textContent = "该选手目前没有进入已生成的淘汰赛阶段。";
+  }
+
+  elements.playoffFlow.innerHTML = visiblePlayoffStages.map(({ stage, pairings }) => {
+    const complete = isPlayoffStageComplete(stage);
+    const matches = pairings.map(pairing => {
+      const view = matchPresentation(pairing);
+      const playerA = names.get(pairing.playerA) || "未知选手";
+      const playerB = names.get(pairing.playerB) || "未知选手";
+      return `
+        <article class="playoff-match-card">
+          <div class="table-label">MATCH ${pairing.table}</div>
+          <div class="match-player ${view.classA}"><span>${escapeHtml(playerA)}</span><em>${view.markA}</em></div>
+          <div class="match-player ${view.classB}"><span>${escapeHtml(playerB)}</span><em>${view.markB}</em></div>
+          <div class="match-result">${view.label}</div>
+        </article>
+      `;
+    }).join("");
+    return `
+      <section class="playoff-stage playoff-stage-${stage.id}">
+        <div class="round-heading">
+          <strong>${escapeHtml(stage.name)}</strong>
           <span class="${complete ? "complete" : ""}">${complete ? "已完成" : "进行中"}</span>
         </div>
         <div class="matches">${matches}</div>
@@ -486,9 +639,17 @@ function buildNextRound() {
 function generationBlockReason() {
   const activePlayers = state.players.filter(player => player.active);
   if (activePlayers.length < 2) return "至少需要 2 位选手才能生成对阵。";
+  if (state.playoffs.length) return "淘汰赛已经开始，不能继续生成瑞士轮。";
   if (state.rounds.length >= state.settings.totalRounds) return "计划轮数已全部生成。";
   const latestRound = state.rounds[state.rounds.length - 1];
   if (latestRound && !isRoundComplete(latestRound)) return `请先录入第 ${latestRound.number} 轮全部比赛结果。`;
+  return "";
+}
+
+function playoffStartBlockReason() {
+  if (state.playoffs.length) return "八强淘汰赛已经生成。";
+  if (state.players.filter(player => player.active).length < 8) return "至少需要 8 位选手才能生成八强淘汰赛。";
+  if (!isSwissComplete()) return "请先完成全部瑞士轮及比赛结果。";
   return "";
 }
 
@@ -500,27 +661,94 @@ function renderManager() {
   if (document.activeElement !== elements.playersInput) {
     elements.playersInput.value = state.players.filter(player => player.active).map(player => player.name).join("\n");
   }
-  const locked = state.rounds.length > 0;
+  const locked = state.rounds.length > 0 || state.playoffs.length > 0;
   elements.playersInput.disabled = locked;
   elements.applyPlayersButton.disabled = locked;
+  elements.totalRoundsInput.disabled = state.playoffs.length > 0;
   elements.playersLockHint.textContent = locked
     ? "赛程已经开始，选手名单已锁定。"
     : "第一轮生成后名单会锁定，避免历史积分失效。";
   elements.managerRoundProgress.textContent = `${state.rounds.length} / ${state.settings.totalRounds}`;
   elements.generateRoundButton.disabled = Boolean(generationBlockReason());
+  elements.resetTournamentButton.disabled = state.rounds.length === 0 && state.playoffs.length === 0;
+  const quarterfinal = getPlayoffStage("quarterfinal");
+  const semifinal = getPlayoffStage("semifinal");
+  const finalStage = getPlayoffStage("final");
+  elements.generateQuarterfinalButton.disabled = Boolean(playoffStartBlockReason());
+  elements.generateSemifinalButton.disabled = !quarterfinal || !isPlayoffStageComplete(quarterfinal) || Boolean(semifinal);
+  elements.generateFinalButton.disabled = !semifinal || !isPlayoffStageComplete(semifinal) || Boolean(finalStage);
+  elements.resetPlayoffsButton.disabled = state.playoffs.length === 0;
+  const championId = playoffChampion();
+  if (championId) {
+    const championName = state.players.find(player => player.id === championId)?.name || "未知选手";
+    elements.managerPlayoffProgress.textContent = `冠军 · ${championName}`;
+  } else if (state.playoffs.length) {
+    const latestStage = state.playoffs[state.playoffs.length - 1];
+    elements.managerPlayoffProgress.textContent = `${latestStage.name}${isPlayoffStageComplete(latestStage) ? "已完成" : "进行中"}`;
+  } else {
+    elements.managerPlayoffProgress.textContent = isSwissComplete() ? "可生成八强" : "等待瑞士轮";
+  }
   elements.saveButton.disabled = !dirty;
-  renderRoundEditor();
+  renderManagerMatches();
 }
 
-function renderRoundEditor() {
-  const names = new Map(state.players.map(player => [player.id, player.name]));
-  if (!state.rounds.length) {
-    elements.roundEditor.innerHTML = '<div class="empty-state">尚未生成任何轮次。</div>';
-    return;
+function getAdminSearchContext() {
+  const rawQuery = elements.adminPlayerSearchInput.value.trim();
+  const query = rawQuery.toLocaleLowerCase("zh-CN");
+  const matchingPlayers = query
+    ? state.players.filter(player =>
+      player.id.toLocaleLowerCase("zh-CN").includes(query) ||
+      player.name.toLocaleLowerCase("zh-CN").includes(query)
+    )
+    : state.players;
+  return {
+    rawQuery,
+    query,
+    matchingPlayers,
+    matchingIds: new Set(matchingPlayers.map(player => player.id))
+  };
+}
+
+function renderManagerMatches() {
+  const search = getAdminSearchContext();
+  const swissMatchCount = renderRoundEditor(search);
+  const playoffMatchCount = renderPlayoffEditor(search);
+  const matchCount = swissMatchCount + playoffMatchCount;
+  elements.adminPlayerSearchClear.hidden = !search.query;
+  if (!search.query) {
+    elements.adminPlayerSearchStatus.textContent = "输入选手 ID，可筛选瑞士轮与淘汰赛并直接录入胜负。";
+  } else if (!search.matchingPlayers.length) {
+    elements.adminPlayerSearchStatus.textContent = `未找到选手 ID“${search.rawQuery}”。`;
+  } else if (!matchCount) {
+    elements.adminPlayerSearchStatus.textContent = `已找到“${search.matchingPlayers.map(player => player.name).join("、")}”，目前还没有已生成的对局。`;
+  } else {
+    elements.adminPlayerSearchStatus.textContent = `已找到 ${matchCount} 场包含“${search.rawQuery}”的对局，可直接录入胜负。`;
   }
-  elements.roundEditor.innerHTML = [...state.rounds].reverse().map(round => {
+}
+
+function renderRoundEditor(search = getAdminSearchContext()) {
+  const names = new Map(state.players.map(player => [player.id, player.name]));
+  let matchCount = 0;
+  const visibleRounds = [...state.rounds].reverse().map(round => {
     const actualIndex = state.rounds.indexOf(round);
-    const matches = round.pairings.map((pairing, pairIndex) => {
+    const pairings = round.pairings.map((pairing, pairIndex) => ({ pairing, pairIndex })).filter(({ pairing }) =>
+      !search.query || search.matchingIds.has(pairing.playerA) || search.matchingIds.has(pairing.playerB)
+    );
+    matchCount += pairings.length;
+    return { round, actualIndex, pairings };
+  }).filter(item => item.pairings.length > 0);
+
+  if (!visibleRounds.length) {
+    const emptyText = !search.query
+      ? "尚未生成任何瑞士轮。"
+      : (!search.matchingPlayers.length ? "未找到该选手。" : "该选手目前没有瑞士轮对局。");
+    elements.roundEditor.innerHTML = `<div class="empty-state">${emptyText}</div>`;
+    return 0;
+  }
+
+  const swissLocked = state.playoffs.length > 0;
+  elements.roundEditor.innerHTML = visibleRounds.map(({ round, actualIndex, pairings }) => {
+    const matches = pairings.map(({ pairing, pairIndex }) => {
       const playerA = names.get(pairing.playerA) || "未知选手";
       const playerB = pairing.playerB === null ? "轮空" : (names.get(pairing.playerB) || "未知选手");
       if (pairing.playerB === null) {
@@ -529,7 +757,7 @@ function renderRoundEditor() {
       return `
         <label class="editor-match">
           <strong>${escapeHtml(playerA)} vs ${escapeHtml(playerB)}</strong>
-          <select data-round-index="${actualIndex}" data-pair-index="${pairIndex}" aria-label="第 ${round.number} 轮第 ${pairing.table} 桌结果">
+          <select data-round-index="${actualIndex}" data-pair-index="${pairIndex}" aria-label="第 ${round.number} 轮第 ${pairing.table} 桌结果" ${swissLocked ? "disabled" : ""}>
             <option value="pending" ${pairing.result === "pending" ? "selected" : ""}>等待结果</option>
             <option value="a" ${pairing.result === "a" ? "selected" : ""}>${escapeHtml(playerA)} 胜</option>
             <option value="draw" ${pairing.result === "draw" ? "selected" : ""}>平局</option>
@@ -540,6 +768,47 @@ function renderRoundEditor() {
     }).join("");
     return `<section class="editor-round"><h4>第 ${round.number} 轮</h4>${matches}</section>`;
   }).join("");
+  return matchCount;
+}
+
+function renderPlayoffEditor(search = getAdminSearchContext()) {
+  const names = new Map(state.players.map(player => [player.id, player.name]));
+  let matchCount = 0;
+  const visibleStages = state.playoffs.map((stage, stageIndex) => {
+    const pairings = stage.pairings.map((pairing, pairIndex) => ({ pairing, pairIndex })).filter(({ pairing }) =>
+      !search.query || search.matchingIds.has(pairing.playerA) || search.matchingIds.has(pairing.playerB)
+    );
+    matchCount += pairings.length;
+    return { stage, stageIndex, pairings };
+  }).filter(item => item.pairings.length > 0);
+
+  if (!visibleStages.length) {
+    const emptyText = !search.query
+      ? "尚未生成八强淘汰赛。"
+      : (!search.matchingPlayers.length ? "未找到该选手。" : "该选手目前没有淘汰赛对局。");
+    elements.playoffEditor.innerHTML = `<div class="empty-state">${emptyText}</div>`;
+    return 0;
+  }
+
+  elements.playoffEditor.innerHTML = visibleStages.map(({ stage, stageIndex, pairings }) => {
+    const locked = stageIndex < state.playoffs.length - 1;
+    const matches = pairings.map(({ pairing, pairIndex }) => {
+      const playerA = names.get(pairing.playerA) || "未知选手";
+      const playerB = names.get(pairing.playerB) || "未知选手";
+      return `
+        <label class="editor-match">
+          <strong>${escapeHtml(playerA)} vs ${escapeHtml(playerB)}</strong>
+          <select data-playoff-stage-index="${stageIndex}" data-playoff-pair-index="${pairIndex}" aria-label="${escapeHtml(stage.name)}第 ${pairing.table} 场结果" ${locked ? "disabled" : ""}>
+            <option value="pending" ${pairing.result === "pending" ? "selected" : ""}>等待结果</option>
+            <option value="a" ${pairing.result === "a" ? "selected" : ""}>${escapeHtml(playerA)} 胜</option>
+            <option value="b" ${pairing.result === "b" ? "selected" : ""}>${escapeHtml(playerB)} 胜</option>
+          </select>
+        </label>
+      `;
+    }).join("");
+    return `<section class="editor-round playoff-editor-stage"><h4>${escapeHtml(stage.name)}${locked ? " · 已锁定" : ""}</h4>${matches}</section>`;
+  }).join("");
+  return matchCount;
 }
 
 function setDirty(value = true) {
@@ -653,7 +922,7 @@ async function connectAdmin() {
 }
 
 function applyPlayers() {
-  if (state.rounds.length) {
+  if (state.rounds.length || state.playoffs.length) {
     setMessage(elements.controlMessage, "赛程开始后不能修改选手名单。", "error");
     return;
   }
@@ -710,6 +979,98 @@ function generateNextRound() {
   setMessage(elements.controlMessage, `第 ${state.rounds.length} 轮已生成，请核对后保存。`, "success");
 }
 
+function addPlayoffStage(id, playerPairs) {
+  const config = PLAYOFF_STAGE_CONFIG.find(stage => stage.id === id);
+  if (!config) return;
+  state.playoffs.push({
+    id: config.id,
+    name: config.name,
+    generatedAt: new Date().toISOString(),
+    pairings: playerPairs.map(([playerA, playerB], index) => ({
+      table: index + 1,
+      playerA,
+      playerB,
+      result: "pending"
+    }))
+  });
+}
+
+function generateQuarterfinals() {
+  const reason = playoffStartBlockReason();
+  if (reason) {
+    setMessage(elements.controlMessage, reason, "error");
+    return;
+  }
+  const topEight = calculateStandings().slice(0, 8).map(record => record.id);
+  addPlayoffStage("quarterfinal", [
+    [topEight[0], topEight[7]],
+    [topEight[3], topEight[4]],
+    [topEight[1], topEight[6]],
+    [topEight[2], topEight[5]]
+  ]);
+  setDirty();
+  renderPublic();
+  renderManager();
+  setMessage(elements.controlMessage, "已按瑞士轮排名生成八强淘汰赛：1–8、4–5、2–7、3–6。", "success");
+}
+
+function generateSemifinals() {
+  const quarterfinal = getPlayoffStage("quarterfinal");
+  if (!quarterfinal || !isPlayoffStageComplete(quarterfinal) || getPlayoffStage("semifinal")) {
+    setMessage(elements.controlMessage, "请先完成全部八强赛结果。", "error");
+    return;
+  }
+  const winners = quarterfinal.pairings.map(playoffWinner);
+  addPlayoffStage("semifinal", [[winners[0], winners[1]], [winners[2], winners[3]]]);
+  setDirty();
+  renderPublic();
+  renderManager();
+  setMessage(elements.controlMessage, "半决赛已生成，请录入两场比赛结果。", "success");
+}
+
+function generateFinal() {
+  const semifinal = getPlayoffStage("semifinal");
+  if (!semifinal || !isPlayoffStageComplete(semifinal) || getPlayoffStage("final")) {
+    setMessage(elements.controlMessage, "请先完成全部半决赛结果。", "error");
+    return;
+  }
+  const winners = semifinal.pairings.map(playoffWinner);
+  addPlayoffStage("final", [[winners[0], winners[1]]]);
+  setDirty();
+  renderPublic();
+  renderManager();
+  setMessage(elements.controlMessage, "决赛已生成，请录入冠军争夺结果。", "success");
+}
+
+function resetPlayoffs() {
+  if (!state.playoffs.length) {
+    setMessage(elements.controlMessage, "当前没有可重置的淘汰赛。", "error");
+    return;
+  }
+  const confirmed = window.confirm("确定要重置淘汰赛吗？八强赛、半决赛和决赛的对阵与结果都会被清空，瑞士轮将保留。");
+  if (!confirmed) return;
+  state.playoffs = [];
+  setDirty();
+  renderPublic();
+  renderManager();
+  setMessage(elements.controlMessage, "淘汰赛已清空，瑞士轮仍保留；点击“保存到 GitHub”后正式生效。", "success");
+}
+
+function resetTournament() {
+  if (!state.rounds.length && !state.playoffs.length) {
+    setMessage(elements.controlMessage, "当前没有可重置的赛程。", "error");
+    return;
+  }
+  const confirmed = window.confirm("确定要重置全部赛程吗？此操作会清空所有瑞士轮、八强赛、半决赛、决赛及比赛结果；保存到 GitHub 后将无法恢复。");
+  if (!confirmed) return;
+  state.rounds = [];
+  state.playoffs = [];
+  setDirty();
+  renderPublic();
+  renderManager();
+  setMessage(elements.controlMessage, "所有赛程已清空，点击“保存到 GitHub”后正式生效。", "success");
+}
+
 async function saveToGitHub() {
   if (!authenticatedUser || !githubToken || !dataSha) {
     setMessage(elements.controlMessage, "管理员连接已失效，请刷新后重新验证。", "error");
@@ -731,7 +1092,7 @@ async function saveToGitHub() {
       method: "PUT",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({
-        message: `更新瑞士轮赛程（第 ${state.rounds.length} 轮）`,
+        message: `更新瑞士轮及淘汰赛赛程（瑞士轮 ${state.rounds.length} 轮）`,
         content: encodeBase64Utf8(content),
         sha: dataSha,
         branch: BRANCH
@@ -783,6 +1144,24 @@ function handleResultChange(event) {
   setMessage(elements.controlMessage, "比赛结果已修改，记得保存到 GitHub。", "success");
 }
 
+function handlePlayoffResultChange(event) {
+  const select = event.target.closest("select[data-playoff-stage-index][data-playoff-pair-index]");
+  if (!select) return;
+  const stageIndex = Number.parseInt(select.dataset.playoffStageIndex, 10);
+  const pairIndex = Number.parseInt(select.dataset.playoffPairIndex, 10);
+  const pairing = state.playoffs[stageIndex]?.pairings[pairIndex];
+  if (!pairing || !PLAYOFF_RESULT_VALUES.has(select.value)) return;
+  pairing.result = select.value;
+  setDirty();
+  renderPublic();
+  renderManager();
+  const championId = playoffChampion();
+  const championName = state.players.find(player => player.id === championId)?.name;
+  setMessage(elements.controlMessage, championName
+    ? `决赛结果已录入，冠军为 ${championName}；记得保存到 GitHub。`
+    : "淘汰赛结果已修改，记得保存到 GitHub。", "success");
+}
+
 function openAdmin() {
   elements.adminShell.hidden = false;
   document.body.classList.add("modal-open");
@@ -819,9 +1198,21 @@ function bindEvents() {
   elements.applyPlayersButton.addEventListener("click", applyPlayers);
   elements.totalRoundsInput.addEventListener("change", updateTotalRounds);
   elements.generateRoundButton.addEventListener("click", generateNextRound);
+  elements.resetTournamentButton.addEventListener("click", resetTournament);
+  elements.generateQuarterfinalButton.addEventListener("click", generateQuarterfinals);
+  elements.generateSemifinalButton.addEventListener("click", generateSemifinals);
+  elements.generateFinalButton.addEventListener("click", generateFinal);
+  elements.resetPlayoffsButton.addEventListener("click", resetPlayoffs);
   elements.saveButton.addEventListener("click", saveToGitHub);
   elements.reloadButton.addEventListener("click", reloadRemoteData);
+  elements.adminPlayerSearchInput.addEventListener("input", renderManagerMatches);
+  elements.adminPlayerSearchClear.addEventListener("click", () => {
+    elements.adminPlayerSearchInput.value = "";
+    renderManagerMatches();
+    elements.adminPlayerSearchInput.focus();
+  });
   elements.roundEditor.addEventListener("change", handleResultChange);
+  elements.playoffEditor.addEventListener("change", handlePlayoffResultChange);
   document.addEventListener("keydown", event => {
     if (event.key === "Escape" && !elements.adminShell.hidden) closeAdmin();
   });
