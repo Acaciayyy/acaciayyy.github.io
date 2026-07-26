@@ -1,7 +1,7 @@
 {
   "version": 1,
   "eventTitle": "辉可梦x更多Mega MegaLink联动赛",
-  "updatedAt": null,
+  "updatedAt": "2026-07-26T01:08:43.646Z",
   "settings": {
     "totalRounds": 5,
     "winPoints": 3,
@@ -19,7 +19,308 @@
       "id": "xiao_hui_c233",
       "name": "xiao_hui_c233",
       "active": true
+    },
+    {
+      "id": "baimo",
+      "name": "baimo",
+      "active": true
+    },
+    {
+      "id": "jbod",
+      "name": "jbod",
+      "active": true
+    },
+    {
+      "id": "blank",
+      "name": "Blank",
+      "active": true
+    },
+    {
+      "id": "lingqiu",
+      "name": "LingQiu",
+      "active": true
+    },
+    {
+      "id": "icechitandaeru",
+      "name": "iceChitandaEru",
+      "active": true
+    },
+    {
+      "id": "adm",
+      "name": "ADM",
+      "active": true
+    },
+    {
+      "id": "fwawa",
+      "name": "FwaWa",
+      "active": true
+    },
+    {
+      "id": "theyotsuba",
+      "name": "TheYotsuba",
+      "active": true
+    },
+    {
+      "id": "tian_qing5",
+      "name": "tian_qing5",
+      "active": true
+    },
+    {
+      "id": "wdk186",
+      "name": "WDK186",
+      "active": true
+    },
+    {
+      "id": "qiluo1",
+      "name": "qiluo1",
+      "active": true
+    },
+    {
+      "id": "abee_sama",
+      "name": "Abee_sama",
+      "active": true
+    },
+    {
+      "id": "m0_om",
+      "name": "m0_OM",
+      "active": true
+    },
+    {
+      "id": "yuki",
+      "name": "Yuki",
+      "active": true
+    },
+    {
+      "id": "the_shine_xk",
+      "name": "The_Shine_XK",
+      "active": true
+    },
+    {
+      "id": "wcnmlgp",
+      "name": "wcnmlgp",
+      "active": true
+    },
+    {
+      "id": "hly233",
+      "name": "hly233",
+      "active": true
+    },
+    {
+      "id": "mangofart",
+      "name": "MangoFart",
+      "active": true
+    },
+    {
+      "id": "hao",
+      "name": "hao",
+      "active": true
+    },
+    {
+      "id": "sanqiu_liuhua",
+      "name": "sanqiu_liuhua",
+      "active": true
+    },
+    {
+      "id": "insectawa",
+      "name": "Insectawa",
+      "active": true
+    },
+    {
+      "id": "stvchan",
+      "name": "STVchan",
+      "active": true
+    },
+    {
+      "id": "mili2",
+      "name": "mili2",
+      "active": true
+    },
+    {
+      "id": "kk537",
+      "name": "KK537",
+      "active": true
+    },
+    {
+      "id": "xiri_ovo",
+      "name": "Xiri_ovo",
+      "active": true
+    },
+    {
+      "id": "xiaoshi0_0",
+      "name": "xiaoshi0_0",
+      "active": true
+    },
+    {
+      "id": "xzmcat",
+      "name": "xzmcat",
+      "active": true
+    },
+    {
+      "id": "114141",
+      "name": "114141",
+      "active": true
+    },
+    {
+      "id": "98989",
+      "name": "98989",
+      "active": true
+    },
+    {
+      "id": "youshengxiao",
+      "name": "youshengxiao",
+      "active": true
+    },
+    {
+      "id": "dick_man",
+      "name": "Dick_Man",
+      "active": true
+    },
+    {
+      "id": "giopie",
+      "name": "Giopie",
+      "active": true
+    },
+    {
+      "id": "michellexin",
+      "name": "Michellexin",
+      "active": true
+    },
+    {
+      "id": "jiegeng2333",
+      "name": "jiegeng2333",
+      "active": true
+    },
+    {
+      "id": "hbnjkm",
+      "name": "hbnjkm",
+      "active": true
+    },
+    {
+      "id": "yuetian",
+      "name": "yuetian",
+      "active": true
     }
   ],
-  "rounds": []
+  "rounds": [
+    {
+      "number": 1,
+      "generatedAt": "2026-07-26T01:08:41.447Z",
+      "pairings": [
+        {
+          "table": 1,
+          "playerA": "xiao_hui_c233",
+          "playerB": "tian_qing5",
+          "result": "pending"
+        },
+        {
+          "table": 2,
+          "playerA": "98989",
+          "playerB": "114141",
+          "result": "pending"
+        },
+        {
+          "table": 3,
+          "playerA": "yuki",
+          "playerB": "youshengxiao",
+          "result": "pending"
+        },
+        {
+          "table": 4,
+          "playerA": "icechitandaeru",
+          "playerB": "insectawa",
+          "result": "pending"
+        },
+        {
+          "table": 5,
+          "playerA": "the_shine_xk",
+          "playerB": "theyotsuba",
+          "result": "pending"
+        },
+        {
+          "table": 6,
+          "playerA": "mangofart",
+          "playerB": "michellexin",
+          "result": "pending"
+        },
+        {
+          "table": 7,
+          "playerA": "fwawa",
+          "playerB": "giopie",
+          "result": "pending"
+        },
+        {
+          "table": 8,
+          "playerA": "xiaoshi0_0",
+          "playerB": "xiri_ovo",
+          "result": "pending"
+        },
+        {
+          "table": 9,
+          "playerA": "m0_om",
+          "playerB": "lingqiu",
+          "result": "pending"
+        },
+        {
+          "table": 10,
+          "playerA": "yuetian",
+          "playerB": "xzmcat",
+          "result": "pending"
+        },
+        {
+          "table": 11,
+          "playerA": "hly233",
+          "playerB": "kk537",
+          "result": "pending"
+        },
+        {
+          "table": 12,
+          "playerA": "mili2",
+          "playerB": "sanqiu_liuhua",
+          "result": "pending"
+        },
+        {
+          "table": 13,
+          "playerA": "dick_man",
+          "playerB": "blank",
+          "result": "pending"
+        },
+        {
+          "table": 14,
+          "playerA": "wdk186",
+          "playerB": "wcnmlgp",
+          "result": "pending"
+        },
+        {
+          "table": 15,
+          "playerA": "jbod",
+          "playerB": "jiegeng2333",
+          "result": "pending"
+        },
+        {
+          "table": 16,
+          "playerA": "abee_sama",
+          "playerB": "acaciay",
+          "result": "pending"
+        },
+        {
+          "table": 17,
+          "playerA": "hbnjkm",
+          "playerB": "hao",
+          "result": "pending"
+        },
+        {
+          "table": 18,
+          "playerA": "adm",
+          "playerB": "baimo",
+          "result": "pending"
+        },
+        {
+          "table": 19,
+          "playerA": "qiluo1",
+          "playerB": "stvchan",
+          "result": "pending"
+        }
+      ]
+    }
+  ]
 }
