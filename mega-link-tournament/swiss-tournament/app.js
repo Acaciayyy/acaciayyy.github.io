@@ -1,7 +1,7 @@
 "use strict";
 
 const REPO_OWNER = "Acaciayyy";
-const REPO_NAME = "huikemeng-extra-paradox-wiki";
+const REPO_NAME = "acaciayyy.github.io";
 const BRANCH = "main";
 const DATA_PATH = "mega-link-tournament/swiss-tournament/swiss-data.json";
 const ADMIN_LOGIN = "acaciayyy";
