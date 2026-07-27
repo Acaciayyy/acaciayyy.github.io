@@ -72,6 +72,12 @@ const elements = {
   playersLockHint: byId("playersLockHint"),
   managerRoundProgress: byId("managerRoundProgress"),
   generateRoundButton: byId("generateRoundButton"),
+  openCustomPairingButton: byId("openCustomPairingButton"),
+  customPairingPanel: byId("customPairingPanel"),
+  customPairingTitle: byId("customPairingTitle"),
+  customPairingRows: byId("customPairingRows"),
+  confirmCustomPairingButton: byId("confirmCustomPairingButton"),
+  cancelCustomPairingButton: byId("cancelCustomPairingButton"),
   resetTournamentButton: byId("resetTournamentButton"),
   generateQuarterfinalButton: byId("generateQuarterfinalButton"),
   generateSemifinalButton: byId("generateSemifinalButton"),
@@ -93,6 +99,8 @@ let githubToken = "";
 let dataSha = "";
 let authenticatedUser = "";
 let dirty = false;
+let customPairingOpen = false;
+let customPairingDraft = [];
 
 function clampInteger(value, min, max, fallback) {
   const number = Number.parseInt(value, 10);
@@ -636,6 +644,104 @@ function buildNextRound() {
   });
 }
 
+function createDefaultCustomPairingDraft() {
+  const activeIds = state.rounds.length
+    ? calculateStandings().map(record => record.id)
+    : state.players.filter(player => player.active).map(player => player.id);
+  const draft = [];
+  for (let index = 0; index + 1 < activeIds.length; index += 2) {
+    draft.push({ playerA: activeIds[index], playerB: activeIds[index + 1] });
+  }
+  if (activeIds.length % 2 === 1) {
+    draft.push({ playerA: activeIds[activeIds.length - 1], playerB: null });
+  }
+  return draft;
+}
+
+function validateCustomPairingDraft(draft) {
+  const activePlayers = state.players.filter(player => player.active);
+  const activeIds = new Set(activePlayers.map(player => player.id));
+  const expectedRows = Math.ceil(activePlayers.length / 2);
+  const expectedByes = activePlayers.length % 2;
+  if (!Array.isArray(draft) || draft.length !== expectedRows) return "自定义对阵数量与当前选手人数不一致。";
+  if (draft.filter(pairing => pairing?.playerB === null).length !== expectedByes) {
+    return expectedByes ? "奇数人数必须指定一位轮空选手。" : "偶数人数不能设置轮空。";
+  }
+
+  const used = new Set();
+  for (const pairing of draft) {
+    const playerA = cleanText(pairing?.playerA);
+    const playerB = pairing?.playerB === null ? null : cleanText(pairing?.playerB);
+    if (!playerA || (playerB !== null && !playerB)) return "请完成所有场次的选手选择。";
+    if (!activeIds.has(playerA) || (playerB !== null && !activeIds.has(playerB))) return "对阵中包含不在当前名单内的选手。";
+    if (playerA === playerB) return "同一位选手不能与自己对战。";
+    for (const playerId of [playerA, playerB].filter(Boolean)) {
+      if (used.has(playerId)) return "同一位选手不能在本轮重复出场。";
+      used.add(playerId);
+    }
+  }
+  if (used.size !== activeIds.size) return "每位参赛选手都必须在本轮出现一次。";
+  return "";
+}
+
+function createCustomRound(draft = customPairingDraft) {
+  const reason = generationBlockReason() || validateCustomPairingDraft(draft);
+  if (reason) return reason;
+  state.rounds.push({
+    number: state.rounds.length + 1,
+    generatedAt: new Date().toISOString(),
+    pairings: draft.map((pairing, index) => ({
+      table: index + 1,
+      playerA: pairing.playerA,
+      playerB: pairing.playerB,
+      result: pairing.playerB === null ? "bye" : "pending"
+    }))
+  });
+  return "";
+}
+
+function customPlayerOptions(selectedId) {
+  const options = state.players.filter(player => player.active).map(player => `
+    <option value="${escapeHtml(player.id)}" ${player.id === selectedId ? "selected" : ""}>${escapeHtml(player.name)}</option>
+  `).join("");
+  return `<option value="" ${selectedId ? "" : "selected"}>请选择选手</option>${options}`;
+}
+
+function renderCustomPairingEditor() {
+  elements.customPairingPanel.hidden = !customPairingOpen;
+  if (!customPairingOpen) {
+    elements.customPairingRows.innerHTML = "";
+    return;
+  }
+  elements.customPairingTitle.textContent = `自定义第 ${state.rounds.length + 1} 轮对阵`;
+  elements.customPairingRows.innerHTML = customPairingDraft.map((pairing, index) => {
+    const playerASelect = `
+      <select data-custom-pair-index="${index}" data-custom-side="a" aria-label="第 ${index + 1} 桌选手 A">
+        ${customPlayerOptions(pairing.playerA)}
+      </select>
+    `;
+    if (pairing.playerB === null) {
+      return `
+        <div class="custom-pairing-row custom-bye-row">
+          <strong>轮空</strong>
+          ${playerASelect}
+          <span class="custom-versus">本轮轮空</span>
+        </div>
+      `;
+    }
+    return `
+      <div class="custom-pairing-row">
+        <strong>第 ${index + 1} 桌</strong>
+        ${playerASelect}
+        <span class="custom-versus">VS</span>
+        <select data-custom-pair-index="${index}" data-custom-side="b" aria-label="第 ${index + 1} 桌选手 B">
+          ${customPlayerOptions(pairing.playerB)}
+        </select>
+      </div>
+    `;
+  }).join("");
+}
+
 function generationBlockReason() {
   const activePlayers = state.players.filter(player => player.active);
   if (activePlayers.length < 2) return "至少需要 2 位选手才能生成对阵。";
@@ -669,7 +775,14 @@ function renderManager() {
     ? "赛程已经开始，选手名单已锁定。"
     : "第一轮生成后名单会锁定，避免历史积分失效。";
   elements.managerRoundProgress.textContent = `${state.rounds.length} / ${state.settings.totalRounds}`;
-  elements.generateRoundButton.disabled = Boolean(generationBlockReason());
+  const generationReason = generationBlockReason();
+  elements.generateRoundButton.disabled = Boolean(generationReason);
+  elements.openCustomPairingButton.disabled = Boolean(generationReason);
+  if (generationReason && customPairingOpen) {
+    customPairingOpen = false;
+    customPairingDraft = [];
+  }
+  renderCustomPairingEditor();
   elements.resetTournamentButton.disabled = state.rounds.length === 0 && state.playoffs.length === 0;
   const quarterfinal = getPlayoffStage("quarterfinal");
   const semifinal = getPlayoffStage("semifinal");
@@ -875,6 +988,8 @@ async function loadRemoteData() {
   const remoteData = JSON.parse(decodeBase64Utf8(file.content));
   state = normalizeData(remoteData);
   dataSha = file.sha;
+  customPairingOpen = false;
+  customPairingDraft = [];
   setDirty(false);
   renderPublic();
   renderManager();
@@ -948,6 +1063,8 @@ function applyPlayers() {
     usedIds.add(id);
     return { id, name, active: true };
   });
+  customPairingOpen = false;
+  customPairingDraft = [];
   setDirty();
   renderPublic();
   renderManager();
@@ -973,10 +1090,57 @@ function generateNextRound() {
     return;
   }
   buildNextRound();
+  customPairingOpen = false;
+  customPairingDraft = [];
   setDirty();
   renderPublic();
   renderManager();
   setMessage(elements.controlMessage, `第 ${state.rounds.length} 轮已生成，请核对后保存。`, "success");
+}
+
+function openCustomPairing() {
+  updateTotalRounds();
+  const reason = generationBlockReason();
+  if (reason) {
+    setMessage(elements.controlMessage, reason, "error");
+    return;
+  }
+  customPairingDraft = createDefaultCustomPairingDraft();
+  customPairingOpen = true;
+  renderCustomPairingEditor();
+  setMessage(elements.controlMessage, `请指定第 ${state.rounds.length + 1} 轮的全部对阵。`, "success");
+}
+
+function cancelCustomPairing() {
+  customPairingOpen = false;
+  customPairingDraft = [];
+  renderCustomPairingEditor();
+  setMessage(elements.controlMessage, "已取消自定义对阵。", "");
+}
+
+function handleCustomPairingChange(event) {
+  const select = event.target.closest("select[data-custom-pair-index][data-custom-side]");
+  if (!select) return;
+  const pairIndex = Number.parseInt(select.dataset.customPairIndex, 10);
+  const pairing = customPairingDraft[pairIndex];
+  if (!pairing) return;
+  if (select.dataset.customSide === "a") pairing.playerA = select.value;
+  if (select.dataset.customSide === "b" && pairing.playerB !== null) pairing.playerB = select.value;
+}
+
+function generateCustomRound() {
+  updateTotalRounds();
+  const reason = createCustomRound();
+  if (reason) {
+    setMessage(elements.controlMessage, reason, "error");
+    return;
+  }
+  customPairingOpen = false;
+  customPairingDraft = [];
+  setDirty();
+  renderPublic();
+  renderManager();
+  setMessage(elements.controlMessage, `第 ${state.rounds.length} 轮自定义对阵已生成，请核对后保存。`, "success");
 }
 
 function addPlayoffStage(id, playerPairs) {
@@ -1065,6 +1229,8 @@ function resetTournament() {
   if (!confirmed) return;
   state.rounds = [];
   state.playoffs = [];
+  customPairingOpen = false;
+  customPairingDraft = [];
   setDirty();
   renderPublic();
   renderManager();
@@ -1198,6 +1364,10 @@ function bindEvents() {
   elements.applyPlayersButton.addEventListener("click", applyPlayers);
   elements.totalRoundsInput.addEventListener("change", updateTotalRounds);
   elements.generateRoundButton.addEventListener("click", generateNextRound);
+  elements.openCustomPairingButton.addEventListener("click", openCustomPairing);
+  elements.cancelCustomPairingButton.addEventListener("click", cancelCustomPairing);
+  elements.confirmCustomPairingButton.addEventListener("click", generateCustomRound);
+  elements.customPairingRows.addEventListener("change", handleCustomPairingChange);
   elements.resetTournamentButton.addEventListener("click", resetTournament);
   elements.generateQuarterfinalButton.addEventListener("click", generateQuarterfinals);
   elements.generateSemifinalButton.addEventListener("click", generateSemifinals);

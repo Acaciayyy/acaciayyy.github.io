@@ -196,10 +196,23 @@
               </div>
               <div class="admin-actions">
                 <button class="primary-button" id="generateRoundButton" type="button">生成下一轮</button>
+                <button class="manual-button" id="openCustomPairingButton" type="button">自定义下一轮对阵</button>
                 <button class="danger-button" id="resetTournamentButton" type="button">重置赛程</button>
                 <button class="save-button" id="saveButton" type="button">保存到 GitHub</button>
                 <button class="ghost-button" id="reloadButton" type="button">放弃修改并重载</button>
               </div>
+              <section class="custom-pairing-panel" id="customPairingPanel" hidden>
+                <div class="custom-pairing-heading">
+                  <div>
+                    <span>MANUAL PAIRING</span>
+                    <h4 id="customPairingTitle">自定义下一轮对阵</h4>
+                  </div>
+                  <button class="custom-pairing-close" id="cancelCustomPairingButton" type="button">取消</button>
+                </div>
+                <p>逐场选择参赛选手；每位选手必须且只能出现一次，奇数人数时可指定一人轮空。</p>
+                <div class="custom-pairing-rows" id="customPairingRows"></div>
+                <button class="manual-confirm-button" id="confirmCustomPairingButton" type="button">确认生成本轮</button>
+              </section>
               <div class="admin-player-search" role="search">
                 <label for="adminPlayerSearchInput">搜索选手 ID 并录入胜负</label>
                 <div class="admin-player-search-row">
