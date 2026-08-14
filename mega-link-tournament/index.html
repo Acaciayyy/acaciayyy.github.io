@@ -356,29 +356,37 @@
     }
     .roster {
       display: grid;
-      grid-template-columns: minmax(280px, 430px) minmax(220px, 1fr);
-      gap: 24px;
-      align-items: start;
-      padding: 24px;
+      grid-template-columns: minmax(0, 1fr);
+      gap: 18px;
+      padding: 20px;
     }
     .team-shot-wrap {
+      display: grid;
       overflow: hidden;
-      padding: 10px;
+      place-items: center;
+      min-height: 108px;
+      padding: 14px 18px;
       border: 1px solid #c8d1ca;
       border-radius: 17px;
       background: #eeece5;
-      box-shadow: 0 18px 35px #4b5b502b;
+      box-shadow: 0 12px 28px #4b5b5024;
     }
     .team-shot {
       display: block;
-      width: 100%;
-      max-width: 359px;
+      width: min(100%, 620px);
       height: auto;
       margin: auto;
       image-rendering: pixelated;
     }
-    .roster-info h3 { margin: 0 0 14px; font-size: 19px; }
-    .members { display: grid; gap: 8px; margin: 0; padding: 0; list-style: none; }
+    .roster-info h3 { margin: 0 0 10px; font-size: 19px; }
+    .members {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 8px;
+      margin: 0;
+      padding: 0;
+      list-style: none;
+    }
     .members li {
       display: flex;
       align-items: center;
@@ -390,7 +398,7 @@
       background: #f8faf7;
       transition: .18s transform, .18s border-color;
     }
-    .members li:hover { transform: translateX(3px); border-color: #9fb8aa; }
+    .members li:hover { transform: translateY(-2px); border-color: #9fb8aa; }
     .slot {
       display: grid;
       place-items: center;
@@ -534,6 +542,7 @@
     [hidden] { display: none !important; }
 
     @media (max-width: 1100px) {
+      .members { grid-template-columns: repeat(2, minmax(0, 1fr)); }
       .winners-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
     }
     @media (max-width: 850px) {
@@ -541,8 +550,7 @@
       h1 { font-size: clamp(27px, 5.4vw, 43px); }
       .layout { grid-template-columns: 1fr; }
       .players { grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); }
-      .roster { grid-template-columns: 1fr; }
-      .team-shot { max-width: 359px; }
+      .team-shot { width: min(100%, 620px); }
     }
     @media (max-width: 560px) {
       h1 { white-space: normal; font-size: clamp(31px, 10vw, 43px); }
@@ -556,6 +564,7 @@
       .detail-hero { padding: 18px; }
       .roster { padding: 14px; }
       .roster-info { padding: 2px 2px 4px; }
+      .members { grid-template-columns: 1fr; }
       .poster-card { padding: 4px; border-radius: 13px; }
       .poster-card img { border-radius: 9px; }
       .section-title { align-items: start; flex-direction: column; gap: 2px; }
