@@ -1,0 +1,1364 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="辉可梦x更多Mega MegaLink联动赛选手阵容、赛事奖励与比赛规则在线查询。">
+  <meta name="robots" content="noindex, nofollow, noarchive, nosnippet, noimageindex">
+  <meta name="theme-color" content="#f6f3eb">
+  <link rel="icon" type="image/png" sizes="32x32" href="eevee-site-icon-32.png">
+  <link rel="icon" type="image/png" sizes="192x192" href="eevee-site-icon-192.png">
+  <link rel="apple-touch-icon" sizes="192x192" href="eevee-site-icon-192.png">
+  <link rel="stylesheet" href="maintenance.css">
+  <title>辉可梦x更多Mega MegaLink联动赛</title>
+  <style>
+    :root {
+      --bg: #f6f3eb;
+      --panel: #fffefa;
+      --panel-2: #f0f6f1;
+      --line: #d7dfd8;
+      --text: #25322d;
+      --muted: #6e7a74;
+      --primary: #567c6b;
+      --primary-soft: #e8f1ec;
+      --accent: #c7814e;
+      --gold: #ad7043;
+    }
+
+    * { box-sizing: border-box; }
+    html { scroll-behavior: smooth; }
+    body {
+      margin: 0;
+      min-height: 100vh;
+      color: var(--text);
+      background:
+        radial-gradient(circle at 10% 0, #dcebe1 0, transparent 35rem),
+        radial-gradient(circle at 90% 18%, #f1dfce 0, transparent 31rem),
+        var(--bg);
+      font: 15px/1.65 system-ui, -apple-system, "Segoe UI", "Microsoft YaHei", sans-serif;
+    }
+
+    button, input { font: inherit; }
+    button { color: inherit; }
+
+    .top-visual-zone {
+      border-bottom: 1px solid #c9d9dc;
+      background:
+        linear-gradient(180deg, #f7fbfac4 0%, #f4faf8ad 38%, #f6f3ebed 100%),
+        url("tournament-hero-background.jpg") center 43% / cover no-repeat;
+      box-shadow: inset 0 -28px 48px #f6f3eb80;
+    }
+
+    header {
+      position: relative;
+      overflow: hidden;
+      padding: 56px max(20px, calc((100% - 1260px) / 2)) 50px;
+      border-bottom: 1px solid var(--line);
+      background: linear-gradient(140deg, #e7f4f1a8, #fbf8f18f);
+    }
+    header::after {
+      content: "";
+      position: absolute;
+      width: 330px;
+      height: 330px;
+      right: max(8%, 28px);
+      top: -190px;
+      border-radius: 50%;
+      border: 48px solid #7da18f18;
+      box-shadow: 0 0 0 38px #d8a47712;
+      pointer-events: none;
+    }
+    h1 {
+      position: relative;
+      z-index: 1;
+      max-width: none;
+      margin: 0 0 12px;
+      font-size: clamp(32px, 4.4vw, 54px);
+      line-height: 1.12;
+      letter-spacing: -.025em;
+      white-space: nowrap;
+    }
+    .event-kicker {
+      position: relative;
+      z-index: 1;
+      display: flex;
+      align-items: center;
+      gap: 9px;
+      margin-bottom: 10px;
+      color: var(--primary);
+      font-size: 12px;
+      font-weight: 800;
+      letter-spacing: .16em;
+    }
+    .event-kicker::before {
+      content: "";
+      width: 28px;
+      height: 3px;
+      border-radius: 99px;
+      background: linear-gradient(90deg, var(--primary), var(--accent));
+    }
+    .subtitle {
+      position: relative;
+      z-index: 1;
+      max-width: 760px;
+      margin: 0;
+      color: #5e6d66;
+      font-size: 16px;
+    }
+    .accent { color: var(--primary); }
+    .badges {
+      position: relative;
+      z-index: 1;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin-top: 20px;
+    }
+    .badge {
+      padding: 5px 12px;
+      border: 1px solid #cbd8d0;
+      border-radius: 999px;
+      color: #466054;
+      background: #fffefa;
+      font-size: 12px;
+    }
+
+    .topbar {
+      position: sticky;
+      z-index: 10;
+      top: 0;
+      border-bottom: 1px solid #d4ddd6;
+      background: #f7f4eceb;
+      backdrop-filter: blur(16px);
+      box-shadow: 0 9px 24px #5d6b6114;
+    }
+    .toolbar {
+      display: grid;
+      grid-template-columns: minmax(240px, 1fr) auto;
+      gap: 10px;
+      align-items: center;
+      max-width: 1260px;
+      margin: auto;
+      padding: 13px 20px;
+    }
+    .search-wrap { position: relative; }
+    .search-icon {
+      position: absolute;
+      left: 14px;
+      top: 50%;
+      transform: translateY(-50%);
+      color: var(--primary);
+      pointer-events: none;
+    }
+    input {
+      width: 100%;
+      padding: 12px 43px;
+      border: 1px solid var(--line);
+      border-radius: 12px;
+      outline: none;
+      color: var(--text);
+      background: #fffefa;
+    }
+    input:focus {
+      border-color: var(--primary);
+      box-shadow: 0 0 0 3px #71978324;
+    }
+    #clear {
+      position: absolute;
+      right: 7px;
+      top: 50%;
+      transform: translateY(-50%);
+      display: none;
+      padding: 5px 9px;
+      border: 0;
+      border-radius: 8px;
+      color: var(--muted);
+      background: transparent;
+      cursor: pointer;
+    }
+    #clear:hover { color: var(--text); background: #e9f0eb; }
+    .status { color: var(--muted); white-space: nowrap; }
+    .quick-nav { display: flex; grid-column: 1 / -1; gap: 12px; padding-top: 2px; }
+    .quick-nav a {
+      display: inline-flex;
+      align-items: center;
+      gap: 9px;
+      min-height: 48px;
+      padding: 10px 20px;
+      border: 1px solid #cbd8d0;
+      border-radius: 14px;
+      color: #466054;
+      background: linear-gradient(180deg, #fffefa, #f8fbf8);
+      text-decoration: none;
+      white-space: nowrap;
+      font-size: 16px;
+      font-weight: 750;
+      box-shadow: 0 5px 15px #5b695f13;
+      transition: .18s transform, .18s border-color, .18s background, .18s box-shadow;
+    }
+    .quick-nav a::before {
+      content: "";
+      width: 10px;
+      height: 10px;
+      flex: 0 0 auto;
+      border-radius: 50%;
+      background: var(--primary);
+      box-shadow: 0 0 0 5px #71978315;
+    }
+    .quick-nav a:nth-child(1) { color: #356b53; border-color: #b9d2c4; background: linear-gradient(180deg, #f8fcf9, #eaf5ee); }
+    .quick-nav a:nth-child(2) { color: #71568f; border-color: #d2c3e4; background: linear-gradient(180deg, #fdfbff, #f1ebf8); }
+    .quick-nav a:nth-child(3) { color: #976126; border-color: #e2c399; background: linear-gradient(180deg, #fffdf8, #fff2df); }
+    .quick-nav a:nth-child(4) { color: #416f82; border-color: #bdd5dc; background: linear-gradient(180deg, #fbfeff, #e9f4f7); }
+    .quick-nav a:nth-child(5) { color: #87506a; border-color: #dfc4d0; background: linear-gradient(180deg, #fffafd, #f9eaf1); }
+    .quick-nav a:nth-child(1)::before { background: #5f9276; box-shadow: 0 0 0 5px #5f927618; }
+    .quick-nav a:nth-child(2)::before { background: #8b6daf; box-shadow: 0 0 0 5px #8b6daf18; }
+    .quick-nav a:nth-child(3)::before { background: #ca8b43; box-shadow: 0 0 0 5px #ca8b4318; }
+    .quick-nav a:nth-child(4)::before { background: #5e8fa3; box-shadow: 0 0 0 5px #5e8fa318; }
+    .quick-nav a:nth-child(5)::before { background: #b96f90; box-shadow: 0 0 0 5px #b96f9018; }
+    .quick-nav a:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 9px 20px #5b695f20;
+    }
+    .quick-nav a:nth-child(1):hover { border-color: #78a18a; background: #e4f2e9; }
+    .quick-nav a:nth-child(2):hover { border-color: #a98dc5; background: #ece3f6; }
+    .quick-nav a:nth-child(3):hover { border-color: #d2a25f; background: #ffedd2; }
+    .quick-nav a:nth-child(4):hover { border-color: #77a7b7; background: #e2f1f5; }
+    .quick-nav a:nth-child(5):hover { border-color: #c88ba6; background: #f7e2eb; }
+
+    .top-content,
+    main {
+      max-width: 1260px;
+      margin: auto;
+      padding: 28px 20px 64px;
+    }
+    .note {
+      margin-bottom: 20px;
+      padding: 18px 21px;
+      border: 1px solid #c7d6cd;
+      border-left: 4px solid var(--primary);
+      border-radius: 16px;
+      color: #46554e;
+      background: linear-gradient(120deg, #edf5f0, #fffefa);
+      box-shadow: 0 8px 24px #5d6b6110;
+    }
+    .note strong { color: var(--primary); }
+
+    .layout {
+      display: grid;
+      grid-template-columns: minmax(260px, 350px) minmax(0, 1fr);
+      gap: 20px;
+      align-items: start;
+    }
+    .players-panel,
+    .detail-panel {
+      border: 1px solid var(--line);
+      border-radius: 22px;
+      background: #fffefa;
+      box-shadow: 0 16px 38px #59675d22;
+    }
+    .players-panel { overflow: hidden; }
+    .panel-heading {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      padding: 16px 17px;
+      border-bottom: 1px solid var(--line);
+    }
+    h2, h3, p { margin-top: 0; }
+    .panel-heading h2 { margin: 0; font-size: 19px; }
+    .count {
+      min-width: 27px;
+      padding: 2px 9px;
+      border-radius: 999px;
+      color: var(--primary);
+      background: #edf5f0;
+      text-align: center;
+      font-size: 12px;
+    }
+    .players { display: grid; gap: 9px; padding: 12px; }
+    .player-card {
+      display: grid;
+      grid-template-columns: 52px 1fr auto;
+      gap: 12px;
+      align-items: center;
+      width: 100%;
+      padding: 12px;
+      border: 1px solid #d8e0da;
+      border-radius: 13px;
+      text-align: left;
+      background: #fafcf9;
+      cursor: pointer;
+      transition: .18s transform, .18s border-color, .18s background;
+    }
+    .player-card:hover,
+    .player-card.active {
+      transform: translateY(-1px);
+      border-color: #759987;
+      background: linear-gradient(135deg, #edf5f0, #fffaf4);
+      box-shadow: 0 8px 20px #5d6b6114;
+    }
+    .avatar {
+      display: grid;
+      place-items: center;
+      width: 52px;
+      aspect-ratio: 1;
+      border: 1px solid #92ac9f;
+      border-radius: 14px;
+      color: #fffefa;
+      background: linear-gradient(145deg, #6f9683, #c99065);
+      box-shadow: inset 0 0 16px #ffffff24;
+      font-size: 23px;
+      font-weight: 800;
+    }
+    .player-name { display: block; font-size: 17px; }
+    .player-meta { display: block; margin-top: 2px; color: var(--muted); font-size: 12px; }
+    .arrow { color: var(--primary); font-size: 22px; }
+    .empty {
+      display: none;
+      padding: 45px 18px;
+      color: var(--muted);
+      text-align: center;
+    }
+
+    .detail-panel { overflow: hidden; }
+    .detail-hero {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 18px;
+      padding: 22px 24px;
+      border-bottom: 1px solid var(--line);
+      background:
+        radial-gradient(circle at 88% 0, #dfc2a735, transparent 17rem),
+        linear-gradient(125deg, #e8f1ec, #fbf5ec);
+    }
+    .eyebrow {
+      margin-bottom: 4px;
+      color: var(--primary);
+      font-size: 12px;
+      font-weight: 800;
+      letter-spacing: .12em;
+      text-transform: uppercase;
+    }
+    .detail-hero h2 { margin: 0; font-size: clamp(24px, 4vw, 36px); }
+    .seed {
+      display: grid;
+      place-items: center;
+      width: 62px;
+      aspect-ratio: 1;
+      flex: 0 0 auto;
+      border: 1px solid #a6bcae;
+      border-radius: 50%;
+      color: var(--accent);
+      background: #fffefa;
+      font-size: 24px;
+      box-shadow: 0 0 0 8px #71978314;
+    }
+    .roster {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr);
+      gap: 18px;
+      padding: 20px;
+    }
+    .team-shot-wrap {
+      display: grid;
+      overflow: hidden;
+      place-items: center;
+      min-height: 108px;
+      padding: 14px 18px;
+      border: 1px solid #c8d1ca;
+      border-radius: 17px;
+      background: #eeece5;
+      box-shadow: 0 12px 28px #4b5b5024;
+    }
+    .team-shot {
+      display: block;
+      width: min(100%, 620px);
+      height: auto;
+      margin: auto;
+      image-rendering: pixelated;
+    }
+    .roster-info h3 { margin: 0 0 10px; font-size: 19px; }
+    .members {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 8px;
+      margin: 0;
+      padding: 0;
+      list-style: none;
+    }
+    .members li {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 10px 12px;
+      border: 1px solid #dbe2dc;
+      border-radius: 12px;
+      color: #3d4d45;
+      background: #f8faf7;
+      transition: .18s transform, .18s border-color;
+    }
+    .members li:hover { transform: translateY(-2px); border-color: #9fb8aa; }
+    .slot {
+      display: grid;
+      place-items: center;
+      width: 25px;
+      height: 25px;
+      border-radius: 50%;
+      color: #fffefa;
+      background: linear-gradient(135deg, #6c927f, #c88c61);
+      font-size: 11px;
+      font-weight: 900;
+    }
+    .tip {
+      margin: 16px 0 0;
+      padding: 12px;
+      border-radius: 10px;
+      color: var(--muted);
+      background: #f3f0e8;
+      font-size: 12px;
+    }
+    footer {
+      margin-top: 42px;
+      padding-top: 20px;
+      border-top: 1px solid var(--line);
+      color: var(--muted);
+      font-size: 13px;
+      text-align: center;
+    }
+    .event-section {
+      margin-top: 34px;
+      scroll-margin-top: 84px;
+    }
+    .section-title {
+      display: flex;
+      align-items: end;
+      justify-content: space-between;
+      gap: 16px;
+      margin-bottom: 14px;
+    }
+    .section-title h2 { margin: 0; font-size: clamp(24px, 3vw, 34px); }
+    .section-title h2::before {
+      content: "";
+      display: inline-block;
+      width: 6px;
+      height: .82em;
+      margin-right: 11px;
+      border-radius: 99px;
+      background: linear-gradient(180deg, var(--primary), var(--accent));
+    }
+    .section-title span { color: var(--muted); font-size: 13px; }
+    .poster-card {
+      margin: 0;
+      padding: 10px;
+      overflow: hidden;
+      border: 1px solid var(--line);
+      border-radius: 22px;
+      background: #fffefa;
+      box-shadow: 0 18px 42px #59675d25;
+    }
+    .poster-card img {
+      display: block;
+      width: 100%;
+      height: auto;
+      border-radius: 11px;
+    }
+    .winners-grid {
+      display: grid;
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+      gap: 16px;
+    }
+    .winner-card {
+      --rank: #5f9276;
+      --rank-soft: #edf6f0;
+      position: relative;
+      overflow: hidden;
+      padding: 17px;
+      border: 1px solid color-mix(in srgb, var(--rank) 38%, #d7dfd8);
+      border-radius: 20px;
+      background: linear-gradient(160deg, #fffefa, var(--rank-soft));
+      box-shadow: 0 14px 32px #59675d1d;
+    }
+    .winner-card::before {
+      content: "";
+      position: absolute;
+      inset: 0 0 auto;
+      height: 5px;
+      background: var(--rank);
+    }
+    .winner-card.champion { --rank: #c28a2e; --rank-soft: #fff6df; }
+    .winner-card.runner-up { --rank: #8264b5; --rank-soft: #f0eafa; }
+    .winner-card.top-four-a,
+    .winner-card.top-four-b { --rank: #5f9276; --rank-soft: #edf6f0; }
+    .winner-rank {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+      margin: 3px 0 14px;
+      color: var(--rank);
+      font-weight: 850;
+    }
+    .winner-rank strong { font-size: 20px; }
+    .winner-rank small { letter-spacing: .11em; }
+    .winner-id-label { margin-bottom: 3px; color: var(--muted); font-size: 12px; }
+    .winner-id {
+      min-height: 2.7em;
+      margin: 0 0 13px;
+      color: var(--text);
+      font-size: clamp(20px, 2.1vw, 28px);
+      line-height: 1.25;
+      word-break: break-all;
+    }
+    .winner-team-slot {
+      display: grid;
+      place-content: center;
+      width: 100%;
+      aspect-ratio: 359 / 458;
+      min-height: 320px;
+      padding: 20px;
+      border: 2px dashed color-mix(in srgb, var(--rank) 42%, #d7dfd8);
+      border-radius: 15px;
+      color: color-mix(in srgb, var(--rank) 78%, #25322d);
+      background:
+        radial-gradient(circle at 50% 44%, color-mix(in srgb, var(--rank) 10%, transparent), transparent 42%),
+        #fffefa9c;
+      text-align: center;
+    }
+    .winner-team-slot b { margin-bottom: 5px; font-size: 16px; }
+    .winner-team-slot small { color: var(--muted); }
+    .placeholder-ball {
+      display: grid;
+      place-items: center;
+      width: 54px;
+      height: 54px;
+      margin: 0 auto 13px;
+      border: 2px solid currentColor;
+      border-radius: 50%;
+      font-size: 21px;
+      opacity: .72;
+    }
+
+    [hidden] { display: none !important; }
+
+    @media (max-width: 1100px) {
+      .members { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+      .winners-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+    }
+    @media (max-width: 850px) {
+      header { padding-top: 40px; padding-bottom: 40px; }
+      h1 { font-size: clamp(27px, 5.4vw, 43px); }
+      .layout { grid-template-columns: 1fr; }
+      .players { grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); }
+      .team-shot { width: min(100%, 620px); }
+    }
+    @media (max-width: 560px) {
+      h1 { white-space: normal; font-size: clamp(31px, 10vw, 43px); }
+      .top-content,
+      main { padding: 20px 12px 44px; }
+      .toolbar { grid-template-columns: 1fr; padding: 10px 12px; }
+      .status { display: none; }
+      .quick-nav { overflow-x: auto; padding-bottom: 2px; }
+      .note { padding: 14px 16px; }
+      .players { grid-template-columns: 1fr; }
+      .detail-hero { padding: 18px; }
+      .roster { padding: 14px; }
+      .roster-info { padding: 2px 2px 4px; }
+      .members { grid-template-columns: 1fr; }
+      .poster-card { padding: 4px; border-radius: 13px; }
+      .poster-card img { border-radius: 9px; }
+      .section-title { align-items: start; flex-direction: column; gap: 2px; }
+      .winners-grid { grid-template-columns: 1fr; }
+      .winner-team-slot { min-height: 360px; }
+    }
+  </style>
+</head>
+<body class="maintenance-mode">
+  <div id="maintenanceNotice" role="status" aria-live="polite">
+    <div class="maintenance-card">
+      <div class="maintenance-mark" aria-hidden="true">◇</div>
+      <h1>网站维护中</h1>
+      <p>赛事主页正在维护，暂时无法访问。请稍后再来。</p>
+    </div>
+  </div>
+  <div class="top-visual-zone">
+  <header>
+    <div class="event-kicker">MEGA LINK TOURNAMENT</div>
+    <h1>辉可梦x更多Mega <span class="accent">MegaLink联动赛</span></h1>
+    <p class="subtitle">选手阵容、赛事奖励与比赛规则一站式在线查看。</p>
+    <div class="badges">
+      <span class="badge" id="playerBadge">已收录 1 位选手</span>
+      <span class="badge">大赛奖励一览</span>
+      <span class="badge">完整赛事规则</span>
+      <span class="badge">胜出选手资料</span>
+    </div>
+  </header>
+
+  <div class="topbar">
+    <div class="toolbar">
+      <div class="search-wrap">
+        <span class="search-icon" aria-hidden="true">⌕</span>
+        <input id="search" type="search" placeholder="搜索选手名称，例如：Acacia" autocomplete="off" aria-label="搜索比赛选手">
+        <button id="clear" type="button" aria-label="清除搜索">清除</button>
+      </div>
+      <div class="status" id="status" aria-live="polite">显示 95 / 95 位选手</div>
+      <nav class="quick-nav" aria-label="页面导航">
+        <a href="#players-section">选手阵容</a>
+        <a href="#rules">赛事规则</a>
+        <a href="#rewards">大赛奖励</a>
+        <a href="#winners">胜出选手</a>
+        <a href="swiss-tournament/">瑞士轮赛程</a>
+      </nav>
+    </div>
+  </div>
+
+  <div class="top-content">
+    <div class="note"><strong>查询说明：</strong>输入选手名称，再点击选手卡片即可查看参赛阵容；也可以搜索阵容中的宝可梦昵称。</div>
+
+    <div class="layout" id="players-section">
+      <section class="players-panel" aria-label="参赛选手列表">
+        <div class="panel-heading">
+          <h2>参赛选手</h2>
+          <span class="count" id="count">95</span>
+        </div>
+        <div class="players" id="players"></div>
+        <div class="empty" id="empty">没有找到符合条件的选手。</div>
+      </section>
+
+      <section class="detail-panel" id="detail" aria-live="polite"></section>
+    </div>
+  </div>
+  </div>
+
+  <main>
+
+    <section class="event-section" id="rules">
+      <div class="section-title">
+        <h2>查看赛事规则</h2>
+        <span>MegaLink联动赛完整比赛规则</span>
+      </div>
+      <figure class="poster-card">
+        <img src="tournament-rules.png?v=20260811" alt="辉可梦x更多Mega MegaLink联动赛比赛规则" loading="lazy" decoding="async">
+      </figure>
+    </section>
+
+    <section class="event-section" id="rewards">
+      <div class="section-title">
+        <h2>大赛奖励一览</h2>
+        <span>冠军、亚军、四强与参赛抽奖奖励</span>
+      </div>
+      <figure class="poster-card">
+        <img src="tournament-rewards.png" alt="辉可梦x更多Mega联动赛大赛奖励一览" loading="lazy" decoding="async">
+      </figure>
+    </section>
+
+    <section class="event-section" id="winners">
+      <div class="section-title">
+        <h2>胜出选手</h2>
+        <span>比赛结束后更新选手 ID 与完整参赛阵容</span>
+      </div>
+      <div class="winners-grid">
+        <article class="winner-card champion">
+          <div class="winner-rank"><strong>冠军</strong><small>CHAMPION</small></div>
+          <div class="winner-id-label">选手 ID</div>
+          <h3 class="winner-id">未知</h3>
+          <div class="winner-team-slot"><span class="placeholder-ball">◉</span><b>阵容图片待更新</b><small>公布结果后放入</small></div>
+        </article>
+        <article class="winner-card runner-up">
+          <div class="winner-rank"><strong>亚军</strong><small>RUNNER-UP</small></div>
+          <div class="winner-id-label">选手 ID</div>
+          <h3 class="winner-id">未知</h3>
+          <div class="winner-team-slot"><span class="placeholder-ball">◉</span><b>阵容图片待更新</b><small>公布结果后放入</small></div>
+        </article>
+        <article class="winner-card top-four-a">
+          <div class="winner-rank"><strong>四强</strong><small>TOP FOUR</small></div>
+          <div class="winner-id-label">选手 ID</div>
+          <h3 class="winner-id">未知</h3>
+          <div class="winner-team-slot"><span class="placeholder-ball">◉</span><b>阵容图片待更新</b><small>公布结果后放入</small></div>
+        </article>
+        <article class="winner-card top-four-b">
+          <div class="winner-rank"><strong>四强</strong><small>TOP FOUR</small></div>
+          <div class="winner-id-label">选手 ID</div>
+          <h3 class="winner-id">未知</h3>
+          <div class="winner-team-slot"><span class="placeholder-ball">◉</span><b>阵容图片待更新</b><small>公布结果后放入</small></div>
+        </article>
+      </div>
+    </section>
+
+    <footer>辉可梦x更多Mega MegaLink联动赛 · 在线专题页</footer>
+  </main>
+
+  <script>
+    const players = [
+      {
+        id: "114141",
+        name: "114141",
+        teamImage: "114141-team.png",
+        members: ["厄诡椪/泉涌面具", "火焰鸟", "波荡水", "土地云/灵兽形态", "雄伟牙", "火神蛾"]
+      },
+      {
+        id: "123820920",
+        name: "123820920",
+        teamImage: "123820920-team.png",
+        members: ["黏美露龙", "大嘴鸥", "幽尾玄鱼", "铝钢桥龙", "猛雷鼓", "坚果哑铃"]
+      },
+      {
+        id: "145",
+        name: "145",
+        teamImage: "145-team.png",
+        members: ["大嘴鸥", "铝钢桥龙", "仆刀将军", "幽尾玄鱼", "天蝎王", "烈咬陆鲨"]
+      },
+      {
+        id: "396",
+        name: "396",
+        teamImage: "396-team.png",
+        members: ["天蝎王", "炽焰咆哮虎", "甲贺忍蛙", "闪焰王牌", "火焰鸡", "双斧战龙"]
+      },
+      {
+        id: "98989",
+        name: "98989",
+        teamImage: "98989-team.png",
+        members: ["九尾/阿罗拉形态", "席多蓝恩", "卡噗鳍鳍", "闪电鸟", "卡噗蝶蝶", "Mushiro"]
+      },
+      {
+        id: "_yangovo",
+        name: "_Yangovo",
+        teamImage: "yangovo-team.png",
+        members: ["猛雷鼓", "天蝎王", "卡噗鳍鳍", "火神蛾", "烈咬陆鲨", "钢铠鸦"]
+      },
+      {
+        id: "abee_sama",
+        name: "Abee_sama",
+        teamImage: "abee-sama-team.png",
+        members: ["闪焰王牌", "雄伟牙", "厄诡椪/涌泉面具", "卡噗蝶蝶", "吉利蛋", "钢铠鸦"]
+      },
+      {
+        id: "ama10",
+        name: "Ama10",
+        teamImage: "ama10-team.png",
+        members: ["大嘴鸥", "雷电云", "幽尾玄鱼", "铝钢桥龙", "烈咬陆鲨", "坚果哑铃"]
+      },
+      {
+        id: "baimo",
+        name: "baimo",
+        teamImage: "baimo-team.png",
+        members: ["布莉姆温", "谜拟丘", "洛托姆/清洗形态", "席多蓝恩", "败露球菇", "美录梅塔"]
+      },
+      {
+        id: "beiqixiaoxiao",
+        name: "beiqixiaoxiao",
+        teamImage: "beiqixiaoxiao-team.png",
+        members: ["长毛巨魔", "班吉拉斯", "坚盾剑怪", "火神蛾", "巨钳螳螂", "铁头壳"]
+      },
+      {
+        id: "bibi",
+        name: "BIBI",
+        teamImage: "bibi-team.png",
+        members: ["蝶结萌虻", "火神蛾", "烈咬陆鲨", "铁辙迹", "铝钢桥龙", "仆刀将军"]
+      },
+      {
+        id: "blank",
+        name: "Blank",
+        teamImage: "blank-team.png",
+        members: ["卡噗蝶蝶", "雄伟牙", "闪焰王牌", "火焰鸟", "幸福蛋", "超坏星"]
+      },
+      {
+        id: "cc_xuebing",
+        name: "CC_Xuebing",
+        teamImage: "cc-xuebing-team.png",
+        members: ["天蝎王", "美纳斯", "百变怪", "太阳伊布", "仙子伊布", "月亮伊布"]
+      },
+      {
+        id: "coco_233",
+        name: "Coco_233",
+        teamImage: "coco-233-team.png",
+        members: ["长毛巨魔", "布莉姆温", "雄伟牙", "土王", "吃吼霸", "坚盾剑怪"]
+      },
+      {
+        id: "dazaiosam1",
+        name: "DazaiOsam1",
+        teamImage: "dazaiosam1-team.png",
+        members: ["卡噗鸣鸣", "电击魔兽", "闪电鸟", "铁武者", "烈咬陆鲨", "甲贺忍蛙"]
+      },
+      {
+        id: "demisa520",
+        name: "Demisa520",
+        teamImage: "demia520-team.png",
+        members: ["雄伟牙", "卡噗鳍鳍", "来悲粗茶", "铁武者", "巨锻匠", "卡噗蝶蝶"]
+      },
+      {
+        id: "dhjdoudou",
+        name: "dhjdoudou",
+        teamImage: "dhjdoudou-team.png",
+        members: ["闪焰王牌", "坚果哑铃", "猛雷鼓", "铁武者", "黏美露龙", "天蝎王"]
+      },
+      {
+        id: "dingdon123",
+        name: "Dingdon123",
+        teamImage: "dingdon123-team.png",
+        members: ["巨钳螳螂", "雄伟牙", "波荡水", "天蝎王", "火神蛾", "猛雷鼓"]
+      },
+      {
+        id: "enkulipa",
+        name: "Enkulipa",
+        teamImage: "enkulipa-team.png",
+        members: ["君主蛇", "Mushiro", "铁武者", "盐石巨灵", "猛雷鼓", "巨钳螳螂"]
+      },
+      {
+        id: "fan",
+        name: "FAN",
+        teamImage: "fan-team.png",
+        members: ["暴鲤龙", "烈咬陆鲨", "三首恶龙", "耿鬼", "铁武者", "雄伟牙"]
+      },
+      {
+        id: "fengdawang",
+        name: "fengdawang",
+        teamImage: "fengdawang-team.png",
+        members: ["坚果哑铃", "大嘴鸥", "波荡水", "铝钢桥龙", "钢炮臂虾", "钢铠鸦"]
+      },
+      {
+        id: "gkfj",
+        name: "GKFJ",
+        teamImage: "gkfj-team.png",
+        members: ["天蝎王", "席多蓝恩", "甲贺忍蛙", "快龙", "猛雷鼓", "黏美露龙"]
+      },
+      {
+        id: "hao_kui",
+        name: "Hao_Kui",
+        teamImage: "hao-kui-team.png",
+        members: ["大嘴鸥", "月月熊", "炽焰咆哮虎", "轰擂金刚猩", "基拉祈", "天蝎王"]
+      },
+      {
+        id: "haoikun",
+        name: "Haoikun",
+        teamImage: "haoikun-team.png",
+        members: ["盔甲鸟", "烈咬陆鲨", "西狮海壬", "轰擂金刚猩", "铝钢桥龙", "火神蛾"]
+      },
+      {
+        id: "hbnjkm",
+        name: "hbnjkm",
+        teamImage: "hbnjkm-team.png",
+        members: ["脱壳忍者", "轻身鳕", "雄伟牙", "保姆曼波", "坚果哑铃", "武道熊师/连击流"]
+      },
+      {
+        id: "hongyan",
+        name: "hongyan",
+        teamImage: "hongyan-team.png",
+        members: ["坚果哑铃", "土王", "三首恶龙", "武道熊师/连击流", "火焰鸟", "铁武者"]
+      },
+      {
+        id: "insestawa",
+        name: "Insestawa",
+        teamImage: "insestawa-team.png",
+        members: ["布莉姆温", "武道熊师/连击流", "大电海燕", "铁武者", "大嘴鸥", "铝钢桥龙"]
+      },
+      {
+        id: "jiegeng2333",
+        name: "jiegeng2333",
+        teamImage: "jiegeng2333-team.png",
+        members: ["克雷色利亚", "赛富豪", "蒂安希", "班基拉斯", "坚果哑铃", "仙子伊布"]
+      },
+      {
+        id: "la5495",
+        name: "La5495",
+        teamImage: "la5495-team.png",
+        members: ["土王", "火焰鸟", "赛富豪", "君主蛇", "大剑鬼", "铁辙迹"]
+      },
+      {
+        id: "lin_m_r",
+        name: "Lin_M_R",
+        teamImage: "lin-m-r-team.png",
+        members: ["铁辙迹", "火焰鸟", "猛雷鼓", "魔幻假面喵", "武道熊师/连击流", "铁武者"]
+      },
+      {
+        id: "lol",
+        name: "Lol",
+        teamImage: "lol-team.png",
+        members: ["吼叫尾", "代拉基翁", "雷吉艾斯", "快龙", "Mushiro", "超坏星"]
+      },
+      {
+        id: "lulu",
+        name: "lulu",
+        teamImage: "lulu-team.png",
+        members: ["卡噗鳍鳍", "快龙", "火神蛾", "波荡水", "雄伟牙", "美录梅塔"]
+      },
+      {
+        id: "m_awa_m",
+        name: "M_awa_M",
+        teamImage: "m-awa-m-team.png",
+        members: ["坚盾剑怪", "沙奈朵", "火焰鸡", "烈咬陆鲨", "巨钳螳螂", "百变怪"]
+      },
+      {
+        id: "mc_gou1",
+        name: "MC_gou1",
+        teamImage: "mc-gou1-team.png",
+        members: ["古鼎鹿", "雄伟牙", "三首恶龙", "铁武者", "仆刀将军", "钢铠鸦"]
+      },
+      {
+        id: "mggsj",
+        name: "MGGSJ",
+        teamImage: "mggsj-team.png",
+        members: ["太阳伊布", "巴布土拨", "冰雪巨龙", "百变怪", "酷豹", "扒手猫"]
+      },
+      {
+        id: "michellexin",
+        name: "Michellexin",
+        teamImage: "michellexin-team.png",
+        members: ["闪焰王牌", "古鼎鹿", "桃歹郎", "厄诡椪/涌泉面具", "钢铠鸦", "百变怪"]
+      },
+      {
+        id: "mili",
+        name: "mili",
+        teamImage: "mili-team.png",
+        members: ["雷吉斯齐鲁", "雷吉艾斯", "雷吉洛克", "雷吉铎拉戈", "魔幻假面喵", "雷吉艾勒奇"]
+      },
+      {
+        id: "mmxyy",
+        name: "MMXYY",
+        teamImage: "mmxyy-team.png",
+        members: ["闪焰王牌", "巨钳螳螂", "呆壳兽", "雄伟牙", "闪电鸟", "班基拉斯"]
+      },
+      {
+        id: "mngege",
+        name: "mngege",
+        teamImage: "mngege-team.png",
+        members: ["长毛巨魔", "雄伟牙", "晶光花", "勾魂眼", "斗笠菇", "骨纹巨声鳄"]
+      },
+      {
+        id: "mooda",
+        name: "mooda",
+        teamImage: "mooda-team.png",
+        members: ["三首恶龙", "土王", "卡噗蝶蝶", "雄伟牙", "保姆曼波", "钢铠鸦"]
+      },
+      {
+        id: "nailong",
+        name: "nailong",
+        teamImage: "nailong-team.png",
+        members: ["雷吉艾勒奇", "骨纹巨声鳄", "超坏星", "坚果哑铃", "仙子伊布", "快龙"]
+      },
+      {
+        id: "non_void_art",
+        name: "Non_Void_Art",
+        teamImage: "non-void-art-team.png",
+        members: ["厄诡椪/岩石面具", "铝钢桥龙", "猛雷鼓", "钢铠鸦", "仙子伊布", "火神蛾"]
+      },
+      {
+        id: "nsgll",
+        name: "nsgll",
+        teamImage: "nsgll-team.png",
+        members: ["快龙", "坚果哑铃", "海兔兽", "铁甲贝", "巨钳螳螂", "巨锻匠"]
+      },
+      {
+        id: "pangjia02",
+        name: "pangjia02",
+        teamImage: "pangjia02-team.png",
+        members: ["铁武者", "三首恶龙", "烈咬陆鲨", "席多蓝恩", "仆刀将军", "索罗亚克"]
+      },
+      {
+        id: "particularly7",
+        name: "Particularly7",
+        teamImage: "particularly7-team.png",
+        members: ["厄诡椪/岩石面具", "雄伟牙", "赛富豪", "武道熊师/连击流", "炎帝", "基拉祈"]
+      },
+      {
+        id: "pfytz",
+        name: "PFYTZ",
+        teamImage: "pfytz-team.png",
+        members: ["卡噗鳍鳍", "土王", "轰擂金刚猩", "铝钢桥龙", "谜拟丘", "喷火龙"]
+      },
+      {
+        id: "piplusip",
+        name: "piplusip",
+        teamImage: "piplusip-team.png",
+        members: ["戽斗尖梭", "大嘴鸥", "吼叫尾", "猛雷鼓", "坚果哑铃", "雄伟牙"]
+      },
+      {
+        id: "ppxsama",
+        name: "ppxsama",
+        teamImage: "ppxsama-team.png",
+        members: ["雄伟牙", "猛雷鼓", "镰刀盔", "赛富豪", "轰擂金刚猩", "火焰鸟"]
+      },
+      {
+        id: "qiaozhi",
+        name: "Qiaozhi__",
+        teamImage: "qiaozhi-team.png",
+        members: ["火神蛾", "厄诡椪/涌泉面具", "卡噗蝶蝶", "土王", "钢铠鸦", "索罗亚克"]
+      },
+      {
+        id: "qwer6666",
+        name: "qwer6666",
+        teamImage: "qwer6666-team.png",
+        members: ["卡噗鳍鳍", "钢铠鸦", "三首恶龙", "恶食大王", "铁毒蛾", "坚果哑铃"]
+      },
+      {
+        id: "qwq",
+        name: "qwq",
+        teamImage: "qwq-team.png",
+        members: ["帝王拿波", "土王", "铝钢桥龙", "谜拟丘", "闪电鸟", "快龙"]
+      },
+      {
+        id: "r_lgds",
+        name: "R_LGDS",
+        teamImage: "r-lgds-team.png",
+        members: ["始祖大鸟", "班基拉斯", "闪电鸟", "卡噗鳍鳍", "勾帕路翁", "土地云/灵兽形态"]
+      },
+      {
+        id: "r_little",
+        name: "R_LITTLE",
+        teamImage: "r-little-team.png",
+        members: ["拉普拉斯", "铁臂膀", "君主蛇", "铁辙迹", "赛富豪", "苍炎刃鬼"]
+      },
+      {
+        id: "rootkitlo",
+        name: "Rootkitlo",
+        teamImage: "rootkitlo-team.png",
+        members: ["班基拉斯", "闪电鸟", "勾帕路翁", "烈咬陆鲨", "来悲粗茶", "龙头地鼠"]
+      },
+      {
+        id: "roxy_grey",
+        name: "ROXY_GREY",
+        teamImage: "roxy-grey-team.png",
+        members: ["烈箭鹰", "卡噗蝶蝶", "赛富豪", "波尔凯尼恩", "钢铠鸦", "土王"]
+      },
+      {
+        id: "sanqiu_liuhua",
+        name: "sanqiu_liuhua",
+        teamImage: "sanqiu-liuhua-team.png",
+        members: ["坚果哑铃", "土王", "钢铠鸦", "吃吼霸", "超坏星", "幸福蛋"]
+      },
+      {
+        id: "sgfh",
+        name: "sgfh",
+        teamImage: "sgfh-team.png",
+        members: ["太阳伊布", "雄伟牙", "火神蛾", "苍炎刃鬼", "铁武者", "藏玛然特/百战勇者形态"]
+      },
+      {
+        id: "shi_su_a",
+        name: "shi_su_A",
+        teamImage: "shi-su-a-team.png",
+        members: ["卡噗蝶蝶", "武道熊师/连击流", "雄伟牙", "逐电犬", "来悲茶", "席多蓝恩"]
+      },
+      {
+        id: "showsi",
+        name: "Showsi",
+        teamImage: "showsi-team.png",
+        members: ["铁甲贝", "天蝎王", "雄伟牙", "火神蛾", "铁武者", "波荡水"]
+      },
+      {
+        id: "si_wang",
+        name: "si_wang",
+        teamImage: "si-wang-team.png",
+        members: ["闪焰王牌", "钢铠鸦", "武道熊师/连击流", "雄伟牙", "百变怪", "盐石巨灵"]
+      },
+      {
+        id: "ssssssss",
+        name: "ssssssss",
+        teamImage: "ssssssss-team.png",
+        members: ["坚果哑铃", "巨沼怪", "快龙", "幽尾玄鱼", "暴鲤龙", "大嘴鸥"]
+      },
+      {
+        id: "su_2526",
+        name: "su_2526",
+        teamImage: "su-2526-team.png",
+        members: ["盔甲鸟", "席多蓝恩", "天蝎王", "超坏星", "Mushiro", "由克希"]
+      },
+      {
+        id: "sybf",
+        name: "sybf",
+        teamImage: "sybf-team.png",
+        members: ["伊布", "索罗亚", "奇诺栗鼠", "沼跃鱼", "麻麻小鱼", "火斑喵"]
+      },
+      {
+        id: "szh123",
+        name: "szh123",
+        teamImage: "szh123-team.png",
+        members: ["火神蛾", "捷拉奥拉", "天蝎王", "烈咬陆鲨", "武道熊师/连击流", "坚果哑铃"]
+      },
+      {
+        id: "t_lingqiu",
+        name: "T_LingQiu",
+        teamImage: "t-lingqiu-team.png",
+        members: ["胖嘟嘟", "坚果哑铃", "拉帝欧斯", "古空棘鱼", "仆刀将军", "雄伟牙"]
+      },
+      {
+        id: "taoqi",
+        name: "taoqi",
+        teamImage: "taoqi-team.png",
+        members: ["闪焰王牌", "火焰鸟", "卡噗蝶蝶", "土王", "雄伟牙", "超坏星"]
+      },
+      {
+        id: "theqingye",
+        name: "Theqingye",
+        teamImage: "theqingye-team.png",
+        members: ["Mushiro", "闪电鸟", "洛托姆/清洗形态", "火焰鸟", "仙子伊布", "月月熊"]
+      },
+      {
+        id: "thesummer_dada",
+        name: "thesummer_dada",
+        teamImage: "thesummer-dada-team.png",
+        members: ["天蝎王", "坚盾剑怪", "仆刀将军", "红莲铠骑", "保姆曼波", "魔幻假面喵"]
+      },
+      {
+        id: "theyotsuba",
+        name: "TheYotsuba",
+        teamImage: "theyotsuba-team.png",
+        members: ["喷火龙", "皮卡丘", "妙蛙种子", "杰尼龟", "巨钳蟹", "臭臭泥"]
+      },
+      {
+        id: "tingfjyu",
+        name: "tingfjyu",
+        teamImage: "tingfjyu-team.png",
+        members: ["烈咬陆鲨", "闪焰王牌", "幽尾玄鱼", "仆刀将军", "来悲粗茶", "仙子伊布"]
+      },
+      {
+        id: "tkfdz013",
+        name: "TKFdz013",
+        teamImage: "tkfdz013-team.png",
+        members: ["保姆曼波", "火焰鸟", "月月熊", "坚果哑铃", "皮可西", "钢铠鸦"]
+      },
+      {
+        id: "wcnmlgp",
+        name: "wcnmlgp",
+        teamImage: "wcnmlgp-team.png",
+        members: ["大嘴鸥", "百变怪", "武道熊师/连击流", "钢炮臂虾", "波荡水", "闪电鸟"]
+      },
+      {
+        id: "wdk",
+        name: "WDK",
+        teamImage: "wdk-team.png",
+        members: ["九尾/阿罗拉形态", "呆呆王/伽勒尔形态", "浩大鲸", "雷鸟海兽", "钢铠鸦", "苍炎刃鬼"]
+      },
+      {
+        id: "wew1234",
+        name: "wew1234",
+        teamImage: "wew1234-team.png",
+        members: ["铁武者", "大嘴鸥", "天蝎王", "铝钢桥龙", "钢铠鸦", "长毛巨魔"]
+      },
+      {
+        id: "whitegiveboy1145",
+        name: "whitegiveboy1145",
+        teamImage: "whitegiveboy1145-team.png",
+        members: ["美纳斯", "雄伟牙", "快龙", "铁武者", "炎帝", "猛雷鼓"]
+      },
+      {
+        id: "wushuai",
+        name: "wushuai",
+        teamImage: "wushuai-team.png",
+        members: ["雄伟牙", "波荡水", "超坏星", "幸福蛋", "火神蛾", "魔幻假面喵"]
+      },
+      {
+        id: "xbwc",
+        name: "xbwc",
+        teamImage: "xbwc-team.png",
+        members: ["巨金怪", "快龙", "火焰鸡", "耿鬼", "烈咬陆鲨", "双斧战龙"]
+      },
+      {
+        id: "xgpawa",
+        name: "xgpawa",
+        teamImage: "xgpawa-team.png",
+        members: ["坚盾剑怪", "长毛巨魔", "妙蛙花", "烈咬陆鲨", "庞岩怪", "盐石巨灵"]
+      },
+      {
+        id: "xiaosan",
+        name: "xiaosan",
+        teamImage: "xiaosan-team.png",
+        members: ["超坏星", "武道熊师/连击流", "坚果哑铃", "天蝎王", "三首恶龙", "藏玛然特/百战勇者形态"]
+      },
+      {
+        id: "xiaoyeziawa123",
+        name: "xiaoyeziawa123",
+        teamImage: "xiaoyeziwa123-team.png",
+        members: ["壶壶", "坚果哑铃", "铝钢桥龙", "盐石巨灵", "洛托姆/清洗形态", "土王"]
+      },
+      {
+        id: "xieeo",
+        name: "Xieeo",
+        teamImage: "xieeo-team.png",
+        members: ["火神蛾", "波荡水", "雄伟牙", "钢铠鸦", "煤炭龟", "雷电云"]
+      },
+      {
+        id: "xiet",
+        name: "xiet",
+        teamImage: "xiet-team.png",
+        members: ["蝶结萌虻", "班基拉斯", "龙头地鼠", "始祖大鸟", "坚果哑铃", "纸御剑"]
+      },
+      {
+        id: "xilin",
+        name: "xilin",
+        teamImage: "xilin-team.png",
+        members: ["晶光花", "波荡水", "铁武者", "酋雷姆", "卡噗鸣鸣", "始祖大鸟"]
+      },
+      {
+        id: "xuyan",
+        name: "xuyan",
+        teamImage: "xuyuan-team.png",
+        members: ["庞岩怪", "水君", "坚果哑铃", "代拉基翁", "雷电云", "黑夜魔灵"]
+      },
+      {
+        id: "yalishiquede",
+        name: "yalishiquede",
+        teamImage: "yalishiquede-team.png",
+        members: ["天蝎王", "厄诡椪/涌泉面具", "仙子伊布", "铁攀岩", "猛雷鼓", "魔幻假面喵"]
+      },
+      {
+        id: "yinyou",
+        name: "yinyou",
+        teamImage: "yinyou-team.png",
+        members: ["巨翅飞鱼", "铝钢桥龙", "Mushiro", "波荡水", "月月熊", "仆刀将军"]
+      },
+      {
+        id: "yiqii",
+        name: "yiqii",
+        teamImage: "yiqii-team.png",
+        members: ["美录梅塔", "卡噗蝶蝶", "天蝎王", "三首恶龙", "太阳珊瑚/伽勒尔形态", "波尔凯尼恩"]
+      },
+      {
+        id: "yuanglen",
+        name: "YuanGlen",
+        teamImage: "yuanglen-team.png",
+        members: ["赛富豪", "雄伟牙", "铁武者", "三首恶龙", "呆呆王/伽勒尔形态", "保姆曼波"]
+      },
+      {
+        id: "yuetian",
+        name: "yuetian",
+        teamImage: "yuetian-team.png",
+        members: ["三首恶龙", "保姆曼波", "古鼎鹿", "武道熊师/连击流", "钢铠鸦", "猛雷鼓"]
+      },
+      {
+        id: "yuganya",
+        name: "YuGanYa",
+        teamImage: "yuganya-team.png",
+        members: ["酋雷姆", "轰擂金刚猩", "天蝎王", "狂欢浪舞鸭", "谜拟丘", "铁攀岩"]
+      },
+      {
+        id: "yumengzi",
+        name: "YuMengZi",
+        teamImage: "yumengzi-team.png",
+        members: ["长毛巨魔", "雷电云", "雄伟牙", "铁毒蛾", "三首恶龙", "甲贺忍蛙"]
+      },
+      {
+        id: "yuxi_kibo",
+        name: "yuxi_kibo",
+        teamImage: "yuxi-kibo-team.png",
+        members: ["雄伟牙", "苍炎刃鬼", "闪电鸟", "赛富豪", "班吉拉斯", "君主蛇"]
+      },
+      {
+        id: "zblvz",
+        name: "zblvz",
+        teamImage: "zblvz-team.png",
+        members: ["长毛巨魔", "雄伟牙", "蝶结萌虻", "Mushiro", "武道熊师/连击流", "闪电鸟"]
+      },
+      {
+        id: "zhaowan",
+        name: "zhaowan",
+        teamImage: "zhaowan-team.png",
+        members: ["壶壶", "雷吉艾勒奇", "甲贺忍蛙", "铝钢桥龙", "百变怪", "怪颚龙"]
+      },
+      {
+        id: "zxc123",
+        name: "zxc123",
+        teamImage: "zcx123-team.png",
+        members: ["Mushiro", "雄伟牙", "卡噗鳍鳍", "雷吉铎拉戈", "闪电鸟", "雷吉斯齐鲁"]
+      }
+    ];
+
+    const search = document.getElementById("search");
+    const clear = document.getElementById("clear");
+    const playersBox = document.getElementById("players");
+    const detail = document.getElementById("detail");
+    const empty = document.getElementById("empty");
+    const status = document.getElementById("status");
+    const count = document.getElementById("count");
+    let selectedId = players[0]?.id ?? null;
+
+    const normalize = value => value.toLocaleLowerCase("zh-CN").replace(/\s+/g, "").trim();
+
+    function renderDetail(player) {
+      if (!player) {
+        detail.hidden = true;
+        return;
+      }
+      detail.hidden = false;
+      detail.innerHTML = `
+        <div class="detail-hero">
+          <div>
+            <div class="eyebrow">PLAYER ROSTER</div>
+            <h2>${player.name} 参赛阵容：</h2>
+          </div>
+          <div class="seed" aria-hidden="true">◈</div>
+        </div>
+        <div class="roster">
+          <div class="team-shot-wrap">
+            <img class="team-shot" src="${player.teamImage}" alt="${player.name} 的参赛阵容，已隐藏携带物">
+          </div>
+          <div class="roster-info">
+            <h3>阵容成员</h3>
+            <ol class="members">
+              ${player.members.map((member, index) => `<li><span class="slot">${index + 1}</span><span>${member}</span></li>`).join("")}
+            </ol>
+            <p class="tip">阵容图片中的宝可梦携带物已隐藏。</p>
+          </div>
+        </div>`;
+    }
+
+    function selectPlayer(id) {
+      selectedId = id;
+      const player = players.find(item => item.id === id);
+      document.querySelectorAll(".player-card").forEach(card => {
+        card.classList.toggle("active", card.dataset.id === id);
+      });
+      renderDetail(player);
+      if (window.innerWidth < 851) detail.scrollIntoView({ behavior: "smooth", block: "start" });
+    }
+
+    function filterPlayers() {
+      const query = normalize(search.value);
+      const filtered = players.filter(player => normalize([player.name, ...player.members].join(" ")).includes(query));
+      playersBox.innerHTML = filtered.map(player => `
+        <button class="player-card${player.id === selectedId ? " active" : ""}" type="button" data-id="${player.id}">
+          <span class="avatar" aria-hidden="true">${player.name.slice(0, 1).toUpperCase()}</span>
+          <span><strong class="player-name">${player.name}</strong><span class="player-meta">参赛阵容 · ${player.members.length} 只</span></span>
+          <span class="arrow" aria-hidden="true">›</span>
+        </button>`).join("");
+
+      playersBox.querySelectorAll(".player-card").forEach(card => card.addEventListener("click", () => selectPlayer(card.dataset.id)));
+      empty.style.display = filtered.length ? "none" : "block";
+      count.textContent = filtered.length;
+      status.textContent = `显示 ${filtered.length} / ${players.length} 位选手`;
+      clear.style.display = search.value ? "block" : "none";
+
+      if (!filtered.length) {
+        renderDetail(null);
+      } else if (!filtered.some(player => player.id === selectedId)) {
+        selectedId = filtered[0].id;
+        renderDetail(filtered[0]);
+        playersBox.querySelector(`[data-id="${selectedId}"]`)?.classList.add("active");
+      } else {
+        renderDetail(players.find(player => player.id === selectedId));
+      }
+    }
+
+    search.addEventListener("input", filterPlayers);
+    clear.addEventListener("click", () => {
+      search.value = "";
+      search.focus();
+      filterPlayers();
+    });
+    document.addEventListener("keydown", event => {
+      if (event.key === "/" && document.activeElement !== search) {
+        event.preventDefault();
+        search.focus();
+      }
+      if (event.key === "Escape" && document.activeElement === search) {
+        search.value = "";
+        filterPlayers();
+        search.blur();
+      }
+    });
+
+    document.getElementById("playerBadge").textContent = `已收录 ${players.length} 位选手`;
+    filterPlayers();
+  </script>
+</body>
+</html>
