@@ -44,7 +44,7 @@ const DEFAULT_DATA = {
   playoffs: []
 };
 
-const RESULT_VALUES = new Set(["pending", "a", "draw", "b", "bye"]);
+const RESULT_VALUES = new Set(["pending", "a", "draw", "b", "bye", "forfeit", "double_loss"]);
 const PLAYOFF_RESULT_VALUES = new Set(["pending", "a", "b"]);
 const byId = id => document.getElementById(id);
 
@@ -148,12 +148,12 @@ function normalizeData(input) {
       const playerB = pairing?.playerB === null ? null : cleanText(pairing?.playerB);
       if (!validPlayerIds.has(playerA)) continue;
       if (playerB !== null && !validPlayerIds.has(playerB)) continue;
-      const result = RESULT_VALUES.has(pairing?.result) ? pairing.result : "pending";
+      const rawResult = RESULT_VALUES.has(pairing?.result) ? pairing.result : "pending";
       pairings.push({
         table: clampInteger(pairing?.table, 1, 999, pairIndex + 1),
         playerA,
         playerB,
-        result: playerB === null ? "bye" : result
+        result: playerB === null ? (rawResult === "forfeit" ? "forfeit" : "bye") : rawResult
       });
     }
     rounds.push({
@@ -299,6 +299,12 @@ function calculateStandings(data = state) {
       const recordA = records.get(pairing.playerA);
       if (!recordA) continue;
 
+      if (pairing.playerB === null && pairing.result === "forfeit") {
+        recordA.played += 1;
+        recordA.losses += 1;
+        continue;
+      }
+
       if (pairing.playerB === null || pairing.result === "bye") {
         recordA.hadBye = true;
         recordA.played += 1;
@@ -331,6 +337,9 @@ function calculateStandings(data = state) {
         recordB.draws += 1;
         recordA.points += data.settings.drawPoints;
         recordB.points += data.settings.drawPoints;
+      } else if (pairing.result === "double_loss") {
+        recordA.losses += 1;
+        recordB.losses += 1;
       }
     }
   }
@@ -399,12 +408,16 @@ function renderStandings() {
 }
 
 function matchPresentation(pairing) {
+  if (pairing.playerB === null && pairing.result === "forfeit") {
+    return { classA: "loser", classB: "loser", markA: "0", markB: "—", label: "弃权" };
+  }
   if (pairing.playerB === null || pairing.result === "bye") {
     return { classA: "winner", classB: "loser", markA: `+${state.settings.byePoints}`, markB: "—", label: "轮空" };
   }
   if (pairing.result === "a") return { classA: "winner", classB: "loser", markA: "1", markB: "0", label: "上方选手胜" };
   if (pairing.result === "b") return { classA: "loser", classB: "winner", markA: "0", markB: "1", label: "下方选手胜" };
   if (pairing.result === "draw") return { classA: "", classB: "", markA: "½", markB: "½", label: "平局" };
+  if (pairing.result === "double_loss") return { classA: "loser", classB: "loser", markA: "0", markB: "0", label: "双方负" };
   return { classA: "", classB: "", markA: "·", markB: "·", label: "等待结果" };
 }
 
@@ -881,6 +894,9 @@ function renderRoundEditor(search = getAdminSearchContext()) {
     const matches = pairings.map(({ pairing, pairIndex }) => {
       const playerA = names.get(pairing.playerA) || "未知选手";
       const playerB = pairing.playerB === null ? "轮空" : (names.get(pairing.playerB) || "未知选手");
+      if (pairing.playerB === null && pairing.result === "forfeit") {
+        return `<div class="editor-match"><strong>${escapeHtml(playerA)} · 弃权</strong><span>本轮记为负场，不得分</span></div>`;
+      }
       if (pairing.playerB === null) {
         return `<div class="editor-match"><strong>${escapeHtml(playerA)} · 轮空</strong><span>自动获得 ${state.settings.byePoints} 分</span></div>`;
       }
@@ -892,6 +908,7 @@ function renderRoundEditor(search = getAdminSearchContext()) {
             <option value="a" ${pairing.result === "a" ? "selected" : ""}>${escapeHtml(playerA)} 胜</option>
             <option value="draw" ${pairing.result === "draw" ? "selected" : ""}>平局</option>
             <option value="b" ${pairing.result === "b" ? "selected" : ""}>${escapeHtml(playerB)} 胜</option>
+            <option value="double_loss" ${pairing.result === "double_loss" ? "selected" : ""}>双方负</option>
           </select>
         </label>
       `;
