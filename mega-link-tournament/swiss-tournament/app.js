@@ -31,7 +31,7 @@ const DEFAULT_PLAYER_NAMES = [
 const DEFAULT_DATA = {
   version: 1,
   eventTitle: "辉可梦x更多Mega MegaLink联动赛",
-  updatedAt: null,
+  updatedAt: "2026-08-15T10:48:00.000Z",
   settings: {
     totalRounds: 5,
     winPoints: 3,
@@ -237,12 +237,16 @@ function formatDate(value) {
   if (!value) return "等待首次更新";
   const date = new Date(value);
   if (Number.isNaN(date.getTime())) return "更新时间未知";
-  return `更新于 ${new Intl.DateTimeFormat("zh-CN", {
-    month: "2-digit",
-    day: "2-digit",
+  const parts = new Intl.DateTimeFormat("zh-CN", {
+    month: "numeric",
+    day: "numeric",
     hour: "2-digit",
-    minute: "2-digit"
-  }).format(date)}`;
+    minute: "2-digit",
+    hour12: false,
+    timeZone: "Asia/Shanghai"
+  }).formatToParts(date);
+  const valueOf = type => parts.find(part => part.type === type)?.value || "";
+  return `更新于 ${valueOf("month")}月${valueOf("day")}日${valueOf("hour")}：${valueOf("minute")}`;
 }
 
 function isRoundComplete(round) {
@@ -363,7 +367,7 @@ function renderPublic() {
       ? `${latestStage.name}已完成，等待下一阶段`
       : `${latestStage.name}进行中`;
   } else if (!state.rounds.length) {
-    elements.eventStatus.textContent = "赛程尚未开始";
+    elements.eventStatus.textContent = "8月15日晚正式开始";
   } else if (isSwissComplete()) {
     elements.eventStatus.textContent = "瑞士轮已完成，等待八强淘汰赛";
   } else if (!isRoundComplete(state.rounds[state.rounds.length - 1])) {
