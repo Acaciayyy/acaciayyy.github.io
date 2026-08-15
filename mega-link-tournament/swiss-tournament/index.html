@@ -100,17 +100,17 @@
       </div>
       <div class="playoff-heading">
         <div>
-          <span class="eyebrow">TOP 8 KNOCKOUT</span>
-          <h3>八强淘汰赛</h3>
+          <span class="eyebrow">TOP 32 KNOCKOUT</span>
+          <h3>决出32强</h3>
         </div>
-        <span class="playoff-status" id="playoffStatus">等待瑞士轮前 8 名</span>
+        <span class="playoff-status" id="playoffStatus">等待瑞士轮前 32 名</span>
       </div>
       <div class="playoff-scroll">
         <div class="playoff-flow" id="playoffFlow"></div>
         <div class="empty-state playoff-empty" id="playoffEmpty">
           <span class="empty-icon">◇</span>
           <strong id="playoffEmptyTitle">淘汰赛尚未生成</strong>
-          <small id="playoffEmptyText">瑞士轮全部完成后，由管理员按积分排名生成八强对阵。</small>
+          <small id="playoffEmptyText">瑞士轮全部完成后，由管理员按积分排名生成32强对阵。</small>
         </div>
       </div>
     </section>
@@ -226,12 +226,14 @@
               <div class="playoff-manager-heading">
                 <div>
                   <span>KNOCKOUT</span>
-                  <h4>八强淘汰赛</h4>
+                  <h4>决出32强</h4>
                 </div>
                 <span class="round-progress" id="managerPlayoffProgress">等待瑞士轮</span>
               </div>
               <div class="admin-actions playoff-actions">
-                <button class="playoff-button" id="generateQuarterfinalButton" type="button">生成八强淘汰赛</button>
+                <button class="playoff-button" id="generateRound32Button" type="button">生成32强淘汰赛</button>
+                <button class="playoff-button" id="generateRound16Button" type="button">生成16强赛</button>
+                <button class="playoff-button" id="generateQuarterfinalButton" type="button">生成8强赛</button>
                 <button class="playoff-button" id="generateSemifinalButton" type="button">生成半决赛</button>
                 <button class="playoff-button" id="generateFinalButton" type="button">生成决赛</button>
                 <button class="danger-button" id="resetPlayoffsButton" type="button">重置淘汰赛</button>
@@ -244,6 +246,6 @@
     </section>
   </div>
 
-  <script src="app.js?v=202608152255" defer></script>
+  <script src="app.js?v=202608152310" defer></script>
 </body>
 </html>

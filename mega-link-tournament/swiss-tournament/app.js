@@ -7,7 +7,9 @@ const DATA_PATH = "mega-link-tournament/swiss-tournament/swiss-data.json";
 const ADMIN_LOGIN = "acaciayyy";
 const API_VERSION = "2022-11-28";
 const PLAYOFF_STAGE_CONFIG = [
-  { id: "quarterfinal", name: "八强赛", size: 4 },
+  { id: "round32", name: "32强赛", size: 16 },
+  { id: "round16", name: "16强赛", size: 8 },
+  { id: "quarterfinal", name: "8强赛", size: 4 },
   { id: "semifinal", name: "半决赛", size: 2 },
   { id: "final", name: "决赛", size: 1 }
 ];
@@ -92,6 +94,8 @@ const elements = {
   confirmCustomPairingButton: byId("confirmCustomPairingButton"),
   cancelCustomPairingButton: byId("cancelCustomPairingButton"),
   resetTournamentButton: byId("resetTournamentButton"),
+  generateRound32Button: byId("generateRound32Button"),
+  generateRound16Button: byId("generateRound16Button"),
   generateQuarterfinalButton: byId("generateQuarterfinalButton"),
   generateSemifinalButton: byId("generateSemifinalButton"),
   generateFinalButton: byId("generateFinalButton"),
@@ -378,7 +382,7 @@ function renderPublic() {
   } else if (!state.rounds.length) {
     elements.eventStatus.textContent = "8月15日晚正式开始";
   } else if (isSwissComplete()) {
-    elements.eventStatus.textContent = "瑞士轮已完成，等待八强淘汰赛";
+    elements.eventStatus.textContent = "瑞士轮已完成，等待32强淘汰赛";
   } else if (!isRoundComplete(state.rounds[state.rounds.length - 1])) {
     elements.eventStatus.textContent = `第 ${state.rounds.length} 轮进行中`;
   } else {
@@ -391,12 +395,12 @@ function renderPublic() {
 
 function renderStandings() {
   const standings = calculateStandings();
-  const showQualifiers = isSwissComplete() && standings.length >= 8;
+  const showQualifiers = isSwissComplete() && standings.length >= 32;
   elements.standingsEmpty.hidden = standings.length > 0;
   elements.standingsBody.innerHTML = standings.map((record, index) => `
     <tr>
       <td><span class="rank-number">${index + 1}</span></td>
-      <td class="player-cell">${escapeHtml(record.name)}${showQualifiers && index < 8 ? '<span class="qualifier-badge">晋级八强</span>' : ""}</td>
+      <td class="player-cell">${escapeHtml(record.name)}${showQualifiers && index < 32 ? '<span class="qualifier-badge">晋级32强</span>' : ""}</td>
       <td>${record.played}</td>
       <td>${record.wins}</td>
       <td>${record.draws}</td>
@@ -511,10 +515,10 @@ function renderSchedule() {
     elements.playoffStatus.textContent = isPlayoffStageComplete(latestStage)
       ? `${latestStage.name}已完成`
       : `${latestStage.name}进行中`;
-  } else if (isSwissComplete() && calculateStandings().length >= 8) {
-    elements.playoffStatus.textContent = "瑞士轮结束 · 等待生成八强";
+  } else if (isSwissComplete() && calculateStandings().length >= 32) {
+    elements.playoffStatus.textContent = "瑞士轮结束 · 等待生成32强";
   } else {
-    elements.playoffStatus.textContent = "等待瑞士轮前 8 名";
+    elements.playoffStatus.textContent = "等待瑞士轮前 32 名";
   }
 
   const showPlayoffEmpty = visiblePlayoffStages.length === 0;
@@ -522,7 +526,7 @@ function renderSchedule() {
   elements.playoffFlow.hidden = showPlayoffEmpty;
   if (!query && !state.playoffs.length) {
     elements.playoffEmptyTitle.textContent = "淘汰赛尚未生成";
-    elements.playoffEmptyText.textContent = "瑞士轮全部完成后，由管理员按积分排名生成八强对阵。";
+    elements.playoffEmptyText.textContent = "瑞士轮全部完成后，由管理员按积分排名生成32强对阵。";
   } else if (!matchingPlayers.length) {
     elements.playoffEmptyTitle.textContent = "未找到选手";
     elements.playoffEmptyText.textContent = "请检查选手 ID 是否输入正确。";
@@ -783,8 +787,8 @@ function generationBlockReason() {
 }
 
 function playoffStartBlockReason() {
-  if (state.playoffs.length) return "八强淘汰赛已经生成。";
-  if (state.players.filter(player => player.active).length < 8) return "至少需要 8 位选手才能生成八强淘汰赛。";
+  if (state.playoffs.length) return "32强淘汰赛已经生成。";
+  if (state.players.filter(player => player.active).length < 32) return "至少需要 32 位选手才能生成32强淘汰赛。";
   if (!isSwissComplete()) return "请先完成全部瑞士轮及比赛结果。";
   return "";
 }
@@ -814,10 +818,14 @@ function renderManager() {
   }
   renderCustomPairingEditor();
   elements.resetTournamentButton.disabled = state.rounds.length === 0 && state.playoffs.length === 0;
+  const round32 = getPlayoffStage("round32");
+  const round16 = getPlayoffStage("round16");
   const quarterfinal = getPlayoffStage("quarterfinal");
   const semifinal = getPlayoffStage("semifinal");
   const finalStage = getPlayoffStage("final");
-  elements.generateQuarterfinalButton.disabled = Boolean(playoffStartBlockReason());
+  elements.generateRound32Button.disabled = Boolean(playoffStartBlockReason());
+  elements.generateRound16Button.disabled = !round32 || !isPlayoffStageComplete(round32) || Boolean(round16);
+  elements.generateQuarterfinalButton.disabled = !round16 || !isPlayoffStageComplete(round16) || Boolean(quarterfinal);
   elements.generateSemifinalButton.disabled = !quarterfinal || !isPlayoffStageComplete(quarterfinal) || Boolean(semifinal);
   elements.generateFinalButton.disabled = !semifinal || !isPlayoffStageComplete(semifinal) || Boolean(finalStage);
   elements.resetPlayoffsButton.disabled = state.playoffs.length === 0;
@@ -829,7 +837,7 @@ function renderManager() {
     const latestStage = state.playoffs[state.playoffs.length - 1];
     elements.managerPlayoffProgress.textContent = `${latestStage.name}${isPlayoffStageComplete(latestStage) ? "已完成" : "进行中"}`;
   } else {
-    elements.managerPlayoffProgress.textContent = isSwissComplete() ? "可生成八强" : "等待瑞士轮";
+    elements.managerPlayoffProgress.textContent = isSwissComplete() ? "可生成32强" : "等待瑞士轮";
   }
   elements.saveButton.disabled = !dirty;
   renderManagerMatches();
@@ -931,7 +939,7 @@ function renderPlayoffEditor(search = getAdminSearchContext()) {
 
   if (!visibleStages.length) {
     const emptyText = !search.query
-      ? "尚未生成八强淘汰赛。"
+      ? "尚未生成32强淘汰赛。"
       : (!search.matchingPlayers.length ? "未找到该选手。" : "该选手目前没有淘汰赛对局。");
     elements.playoffEditor.innerHTML = `<div class="empty-state">${emptyText}</div>`;
     return 0;
@@ -1193,29 +1201,61 @@ function addPlayoffStage(id, playerPairs) {
   });
 }
 
-function generateQuarterfinals() {
+function generateRound32() {
   const reason = playoffStartBlockReason();
   if (reason) {
     setMessage(elements.controlMessage, reason, "error");
     return;
   }
-  const topEight = calculateStandings().slice(0, 8).map(record => record.id);
+  const top32 = calculateStandings().slice(0, 32).map(record => record.id);
+  const seedPairs = [
+    [0, 31], [15, 16], [7, 24], [8, 23], [3, 28], [12, 19], [4, 27], [11, 20],
+    [1, 30], [14, 17], [6, 25], [9, 22], [2, 29], [13, 18], [5, 26], [10, 21]
+  ];
+  addPlayoffStage("round32", seedPairs.map(([a, b]) => [top32[a], top32[b]]));
+  setDirty();
+  renderPublic();
+  renderManager();
+  setMessage(elements.controlMessage, "已按瑞士轮排名生成32强淘汰赛，前32名进入淘汰赛。", "success");
+}
+
+function generateRound16() {
+  const round32 = getPlayoffStage("round32");
+  if (!round32 || !isPlayoffStageComplete(round32) || getPlayoffStage("round16")) {
+    setMessage(elements.controlMessage, "请先完成全部32强赛结果。", "error");
+    return;
+  }
+  const winners = round32.pairings.map(playoffWinner);
+  addPlayoffStage("round16", Array.from({ length: 8 }, (_, index) => [winners[index * 2], winners[index * 2 + 1]]));
+  setDirty();
+  renderPublic();
+  renderManager();
+  setMessage(elements.controlMessage, "16强赛已生成，请录入八场比赛结果。", "success");
+}
+
+function generateQuarterfinals() {
+  const round16 = getPlayoffStage("round16");
+  if (!round16 || !isPlayoffStageComplete(round16) || getPlayoffStage("quarterfinal")) {
+    setMessage(elements.controlMessage, "请先完成全部16强赛结果。", "error");
+    return;
+  }
+  const winners = round16.pairings.map(playoffWinner);
   addPlayoffStage("quarterfinal", [
-    [topEight[0], topEight[7]],
-    [topEight[3], topEight[4]],
-    [topEight[1], topEight[6]],
-    [topEight[2], topEight[5]]
+    [winners[0], winners[7]],
+    [winners[3], winners[4]],
+    [winners[1], winners[6]],
+    [winners[2], winners[5]]
   ]);
   setDirty();
   renderPublic();
   renderManager();
-  setMessage(elements.controlMessage, "已按瑞士轮排名生成八强淘汰赛：1–8、4–5、2–7、3–6。", "success");
+  setMessage(elements.controlMessage, "8强赛已生成，请录入四场比赛结果。", "success");
 }
 
 function generateSemifinals() {
   const quarterfinal = getPlayoffStage("quarterfinal");
   if (!quarterfinal || !isPlayoffStageComplete(quarterfinal) || getPlayoffStage("semifinal")) {
-    setMessage(elements.controlMessage, "请先完成全部八强赛结果。", "error");
+    setMessage(elements.controlMessage, "请先完成全部8强赛结果。", "error");
     return;
   }
   const winners = quarterfinal.pairings.map(playoffWinner);
@@ -1245,7 +1285,7 @@ function resetPlayoffs() {
     setMessage(elements.controlMessage, "当前没有可重置的淘汰赛。", "error");
     return;
   }
-  const confirmed = window.confirm("确定要重置淘汰赛吗？八强赛、半决赛和决赛的对阵与结果都会被清空，瑞士轮将保留。");
+  const confirmed = window.confirm("确定要重置淘汰赛吗？32强赛、16强赛、8强赛、半决赛和决赛的对阵与结果都会被清空，瑞士轮将保留。");
   if (!confirmed) return;
   state.playoffs = [];
   setDirty();
@@ -1259,7 +1299,7 @@ function resetTournament() {
     setMessage(elements.controlMessage, "当前没有可重置的赛程。", "error");
     return;
   }
-  const confirmed = window.confirm("确定要重置全部赛程吗？此操作会清空所有瑞士轮、八强赛、半决赛、决赛及比赛结果；保存到 GitHub 后将无法恢复。");
+  const confirmed = window.confirm("确定要重置全部赛程吗？此操作会清空所有瑞士轮、32强赛、16强赛、8强赛、半决赛、决赛及比赛结果；保存到 GitHub 后将无法恢复。");
   if (!confirmed) return;
   state.rounds = [];
   state.playoffs = [];
@@ -1403,6 +1443,8 @@ function bindEvents() {
   elements.confirmCustomPairingButton.addEventListener("click", generateCustomRound);
   elements.customPairingRows.addEventListener("change", handleCustomPairingChange);
   elements.resetTournamentButton.addEventListener("click", resetTournament);
+  elements.generateRound32Button.addEventListener("click", generateRound32);
+  elements.generateRound16Button.addEventListener("click", generateRound16);
   elements.generateQuarterfinalButton.addEventListener("click", generateQuarterfinals);
   elements.generateSemifinalButton.addEventListener("click", generateSemifinals);
   elements.generateFinalButton.addEventListener("click", generateFinal);
