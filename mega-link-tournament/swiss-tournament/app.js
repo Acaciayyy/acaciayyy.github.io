@@ -16,15 +16,15 @@ const DEFAULT_PLAYER_NAMES = [
   "_Yangovo", "145", "396", "98989", "114141", "123820920", "Abee_sama", "Ama10",
   "baimo", "beiqixiaoxiao", "BIBI", "Blank", "CC_Xuebing", "Coco_233", "DazaiOsam1",
   "Demisa520", "dhjdoudou", "Dingdon123", "Enkulipa", "FAN", "fengdawang", "GKFJ",
-  "Hao_Kui", "Haoikun", "hbnjkm", "hongyan", "Insestawa", "jiegeng2333", "La5495",
+  "Hao_Kui", "Haoikun", "hbnjkm", "Insestawa", "jiegeng2333", "La5495",
   "Lin_M_R", "Lol", "lulu", "M_awa_M", "MC_gou1", "MGGSJ", "Michellexin", "mili",
   "MMXYY", "mngege", "mooda", "nailong", "Non_Void_Art", "nsgll", "pangjia02",
   "Particularly7", "PFYTZ", "piplusip", "ppxsama", "Qiaozhi__", "qwer6666", "qwq",
   "R_LGDS", "R_LITTLE", "Rootkitlo", "ROXY_GREY", "sanqiu_liuhua", "sgfh", "shi_su_A",
-  "Showsi", "si_wang", "ssssssss", "su_2526", "sybf", "szh123", "T_LingQiu", "taoqi",
+  "Showsi", "si_wang", "ssssssss", "sybf", "szh123", "T_LingQiu", "taoqi",
   "Theqingye", "thesummer_dada", "TheYotsuba", "tingfjyu", "TKFdz013", "wcnmlgp", "WDK",
-  "wew1234", "whitegiveboy1145", "wushuai", "xbwc", "xgpawa", "xiaosan", "xiaoyeziawa123",
-  "Xieeo", "xiet", "xilin", "xuyan", "yalishiquede", "yinyou", "yiqii", "YuanGlen",
+  "wew1234", "whitegiveboy1145", "wushuai", "xbwc", "xgpawa", "xiaosan", "xiaoyeziwa123",
+  "Xieeo", "xiet", "xilin", "xuyuan", "yalishiquede", "yinyou", "yiqii", "YuanGlen",
   "yuetian", "YuGanYa", "YuMengZi", "yuxi_kibo", "zblvz", "zhaowan", "zxc123"
 ];
 
