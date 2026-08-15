@@ -1,0 +1,48 @@
+* { box-sizing: border-box; }
+
+html, body { min-height: 100%; }
+
+body.maintenance-mode > * { display: none !important; }
+
+body.maintenance-mode > #maintenanceNotice {
+  align-items: center;
+  background: #f6f3eb;
+  color: #25322d;
+  display: flex !important;
+  font-family: system-ui, -apple-system, "Segoe UI", "Microsoft YaHei", sans-serif;
+  justify-content: center;
+  margin: 0;
+  min-height: 100vh;
+  padding: 24px;
+  text-align: center;
+}
+
+#maintenanceNotice .maintenance-card {
+  background: #fffefa;
+  border: 1px solid #d7dfd8;
+  border-radius: 24px;
+  box-shadow: 0 18px 50px #59675d22;
+  max-width: 560px;
+  padding: 48px 40px;
+  width: 100%;
+}
+
+#maintenanceNotice .maintenance-mark {
+  color: #567c6b;
+  font-size: 34px;
+  line-height: 1;
+  margin-bottom: 22px;
+}
+
+#maintenanceNotice h1 {
+  font-size: clamp(26px, 5vw, 40px);
+  letter-spacing: .04em;
+  margin: 0 0 16px;
+}
+
+#maintenanceNotice p {
+  color: #6e7a74;
+  font-size: 16px;
+  line-height: 1.8;
+  margin: 0;
+}
