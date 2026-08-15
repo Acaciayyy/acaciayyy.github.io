@@ -400,7 +400,7 @@ function renderStandings() {
   elements.standingsBody.innerHTML = standings.map((record, index) => `
     <tr>
       <td><span class="rank-number">${index + 1}</span></td>
-      <td class="player-cell">${escapeHtml(record.name)}${showQualifiers && index < 32 ? '<span class="qualifier-badge">晋级32强</span>' : ""}</td>
+      <td class="player-cell">${escapeHtml(record.name)}${showQualifiers && index < 32 ? '<span class="qualifier-badge">前三十二名晋级淘汰赛</span>' : ""}</td>
       <td>${record.played}</td>
       <td>${record.wins}</td>
       <td>${record.draws}</td>
